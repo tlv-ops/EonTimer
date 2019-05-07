@@ -12,7 +12,8 @@ enum class FxmlResource(private val path: String) : Resource {
     ActionSettingsPane("settings/ActionSettingsPane.fxml"),
     TimerSettingsPane("settings/TimerSettingsPane.fxml"),
     SettingsControlPane("settings/SettingsControlPane.fxml"),
-    TimerDisplayPane("TimerDisplayPane.fxml");
+    TimerDisplayPane("TimerDisplayPane.fxml"),
+    AvailableUpdatePane("ApplicationUpdatePane.fxml");
 
     override fun getPath(): String {
         return "$BASE_RESOURCE_PATH/fxml/${this.path}"

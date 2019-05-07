@@ -32,6 +32,7 @@ class ApplicationModelAdapter @Autowired constructor(
         actionSettingsModelAdapter.write(writer.name("actionSettings"), value.actionSettings)
         timerSettingsModelAdapter.write(writer.name("timerSettings"), value.timerSettings)
         writer.name("selectedTimer").value(value.selectedTimerType.name)
+        writer.name("checkForUpdates").value(value.checkForUpdates)
         writer.endObject()
     }
 
@@ -47,6 +48,7 @@ class ApplicationModelAdapter @Autowired constructor(
                 "actionSettings" -> model.actionSettings = actionSettingsModelAdapter.read(reader)
                 "timerSettings" -> model.timerSettings = timerSettingsModelAdapter.read(reader)
                 "selectedTimer" -> model.selectedTimerType = TimerType.valueOf(reader.nextString())
+                "checkForUpdates" -> model.checkForUpdates = reader.nextBoolean()
             }
         }
         reader.endObject()

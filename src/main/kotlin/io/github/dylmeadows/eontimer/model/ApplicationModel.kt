@@ -5,7 +5,9 @@ import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.*
 import io.github.dylmeadows.eontimer.util.getValue
 import io.github.dylmeadows.eontimer.util.setValue
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ObjectProperty
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
 
 class ApplicationModel {
@@ -18,4 +20,7 @@ class ApplicationModel {
 
     val selectedTimerTypeProperty: ObjectProperty<TimerType> = SimpleObjectProperty(TimerConstants.DEFAULT_TIMER_TYPE)
     var selectedTimerType: TimerType by selectedTimerTypeProperty
+
+    val checkForUpdatesProperty: BooleanProperty = SimpleBooleanProperty(true)
+    var checkForUpdates: Boolean by checkForUpdatesProperty
 }

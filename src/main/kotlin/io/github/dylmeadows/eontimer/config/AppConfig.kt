@@ -15,6 +15,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.reactive.function.client.WebClient
 import java.io.File
 import javax.annotation.PreDestroy
 
@@ -69,4 +70,9 @@ open class AppConfig @Autowired constructor(
 
     @Bean
     open fun timerSettingsModel(settings: ApplicationModel): TimerSettingsModel = settings.timerSettings
+
+    @Bean
+    open fun githubWebClient(): WebClient {
+        return WebClient.create("https://api.github.com")
+    }
 }
