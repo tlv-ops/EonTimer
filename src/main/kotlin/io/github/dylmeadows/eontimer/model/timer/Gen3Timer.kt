@@ -7,18 +7,19 @@ import javafx.beans.property.SimpleLongProperty
 import javafx.beans.property.SimpleObjectProperty
 
 class Gen3Timer {
+    @Transient
     val modeProperty = SimpleObjectProperty(DEFAULT_MODE)
     var mode: Mode by modeProperty
-
+    @Transient
     val calibrationProperty = SimpleLongProperty(DEFAULT_CALIBRATION)
     var calibration by calibrationProperty
-
+    @Transient
     val preTimerProperty = SimpleLongProperty(DEFAULT_PRE_TIMER)
     var preTimer by preTimerProperty
-
+    @Transient
     val targetFrameProperty = SimpleLongProperty(DEFAULT_TARGET_FRAME)
     var targetFrame by targetFrameProperty
-
+    @Transient
     val frameHitProperty = SimpleLongProperty()
     var frameHit by frameHitProperty
 

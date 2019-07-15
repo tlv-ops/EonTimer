@@ -8,5 +8,5 @@ enum class Console(val fps: Double) : Choice {
 
     override val displayName: String = name
 
-    val frameRate: Double get() = 1000 / fps
+    val frameRate: Double = 1000 / fps
 }

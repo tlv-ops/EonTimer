@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleObjectProperty
 
 class Gen5Timer {
     @Transient
-    val modeProperty = SimpleObjectProperty<Mode>(DEFAULT_MODE)
+    val modeProperty = SimpleObjectProperty(DEFAULT_MODE)
     var mode: Mode by modeProperty
     @Transient
     val calibrationProperty = SimpleLongProperty(DEFAULT_CALIBRATION)

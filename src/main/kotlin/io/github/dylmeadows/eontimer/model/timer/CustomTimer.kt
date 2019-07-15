@@ -5,5 +5,5 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 
 class CustomTimer {
-    val stages: ObservableList<TimerStage> = FXCollections.observableArrayList<TimerStage>()
+    val stages: ObservableList<TimerStage> = FXCollections.observableArrayList()
 }
