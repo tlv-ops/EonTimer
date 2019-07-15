@@ -2,8 +2,8 @@ package io.github.dylmeadows.eontimer.controller.settings
 
 import io.github.dylmeadows.eontimer.config.AppProperties
 import io.github.dylmeadows.eontimer.model.resource.FxmlResource
+import io.github.dylmeadows.eontimer.util.extensions.load
 import io.github.dylmeadows.springboot.javafx.fxml.SpringFxmlLoader
-import javafx.application.Platform
 import javafx.scene.Parent
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Dialog
@@ -15,7 +15,7 @@ class SettingsDialog @Autowired constructor(
     private val properties: AppProperties,
     loader: SpringFxmlLoader) {
 
-    private val settingsControlPane = loader.load<Parent>(FxmlResource.SettingsControlPane.get())
+    private val settingsControlPane = loader.load<Parent>(FxmlResource.SettingsControlPane)
 
     fun showAndWait() {
         val dialog = Dialog<Void>()

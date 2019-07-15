@@ -1,12 +1,12 @@
 package io.github.dylmeadows.eontimer.service.factory.timer
 
-import io.github.dylmeadows.eontimer.util.milliseconds
-import io.github.dylmeadows.eontimer.util.toMinimumLength
+import io.github.dylmeadows.commonkt.core.time.milliseconds
+import io.github.dylmeadows.eontimer.util.extensions.toMinimumLength
 import org.springframework.stereotype.Service
 import java.time.Duration
 
 @Service
-class SecondTimerFactory {
+class SecondTimer {
 
     fun createStages(targetSecond: Long, calibration: Long): List<Duration> {
         return listOf(stage1(targetSecond, calibration))

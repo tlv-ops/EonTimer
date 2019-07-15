@@ -1,61 +1,34 @@
 package io.github.dylmeadows.eontimer.service.factory
 
-import io.github.dylmeadows.eontimer.model.TimerState
-import io.github.dylmeadows.eontimer.model.timer.Gen3TimerMode
-import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
-import io.github.dylmeadows.eontimer.service.factory.timer.FixedFrameTimerFactory
-import io.github.dylmeadows.eontimer.service.factory.timer.VariableFrameTimerFactory
-import io.github.dylmeadows.eontimer.util.asFlux
+import io.github.dylmeadows.eontimer.model.timer.Gen3Timer
+import io.github.dylmeadows.eontimer.service.factory.timer.FrameTimer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.Duration
-import javax.annotation.PostConstruct
 
 @Component
 class Gen3TimerFactory @Autowired constructor(
-    private val timerState: TimerState,
-    private val gen3TimerModel: Gen3TimerModel,
-    private val fixedFrameTimerFactory: FixedFrameTimerFactory,
-    private val variableFrameTimerFactory: VariableFrameTimerFactory) : TimerFactory {
-
-    @PostConstruct
-    private fun initialize() {
-        listOf(
-            gen3TimerModel.modeProperty,
-            gen3TimerModel.preTimerProperty,
-            gen3TimerModel.calibrationProperty)
-            .map { it.asFlux() }
-            .forEach {
-                it.subscribe {
-                    timerState.update(stages)
-                }
-            }
-        gen3TimerModel.targetFrameProperty.asFlux()
-            .filter { gen3TimerModel.mode == Gen3TimerMode.STANDARD }
-            .subscribe { timerState.update(stages) }
-    }
+    private val gen3Timer: Gen3Timer,
+    private val frameTimer: FrameTimer) : TimerFactory {
 
     override val stages: List<Duration>
         get() {
-            return when (gen3TimerModel.mode) {
-                Gen3TimerMode.STANDARD ->
-                    fixedFrameTimerFactory.createStages(
-                        gen3TimerModel.preTimer,
-                        gen3TimerModel.targetFrame,
-                        gen3TimerModel.calibration)
-                Gen3TimerMode.VARIABLE_TARGET ->
-                    variableFrameTimerFactory.createStages(
-                        gen3TimerModel.preTimer)
+            return when (gen3Timer.mode) {
+                Gen3Timer.Mode.STANDARD ->
+                    frameTimer.createStages(
+                        gen3Timer.preTimer,
+                        gen3Timer.targetFrame,
+                        gen3Timer.calibration)
+                Gen3Timer.Mode.VARIABLE_TARGET ->
+                    frameTimer.createStages(
+                        gen3Timer.preTimer)
             }
         }
 
     override fun calibrate() {
-        // NOTE: VariableFrameTimer is essentially a FixedFrameTimer
-        // just with a floating target frame value. Therefore, the
-        // calibration process is the same for both.
-        gen3TimerModel.calibration +=
-            fixedFrameTimerFactory.calibrate(
-                gen3TimerModel.targetFrame,
-                gen3TimerModel.frameHit)
+        gen3Timer.calibration +=
+            frameTimer.calibrate(
+                gen3Timer.targetFrame,
+                gen3Timer.frameHit)
     }
 }

@@ -1,24 +1,23 @@
 package io.github.dylmeadows.eontimer.controller.timer
 
+import io.github.dylmeadows.commonkt.core.time.milliseconds
+import io.github.dylmeadows.commonkt.core.time.sum
+import io.github.dylmeadows.commonkt.javafx.beans.property.bindBidirectional
+import io.github.dylmeadows.commonkt.javafx.beans.property.getValue
+import io.github.dylmeadows.commonkt.javafx.beans.property.setValue
+import io.github.dylmeadows.commonkt.javafx.node.asChoiceField
+import io.github.dylmeadows.commonkt.javafx.node.setOnFocusLost
+import io.github.dylmeadows.commonkt.javafx.node.showWhen
+import io.github.dylmeadows.commonkt.javafx.node.spinner.LongValueFactory
+import io.github.dylmeadows.commonkt.javafx.node.spinner.commitValue
+import io.github.dylmeadows.commonkt.javafx.node.spinner.text
+import io.github.dylmeadows.commonkt.javafx.node.spinner.valueProperty
 import io.github.dylmeadows.eontimer.model.TimerState
-import io.github.dylmeadows.eontimer.model.timer.Gen3TimerMode
-import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
+import io.github.dylmeadows.eontimer.model.timer.Gen3Timer
 import io.github.dylmeadows.eontimer.service.CalibrationService
 import io.github.dylmeadows.eontimer.service.TimerRunnerService
 import io.github.dylmeadows.eontimer.service.factory.Gen3TimerFactory
-import io.github.dylmeadows.eontimer.util.asFlux
-import io.github.dylmeadows.eontimer.util.bindBidirectional
-import io.github.dylmeadows.eontimer.util.getValue
-import io.github.dylmeadows.eontimer.util.javafx.asChoiceField
-import io.github.dylmeadows.eontimer.util.javafx.spinner.LongValueFactory
-import io.github.dylmeadows.eontimer.util.javafx.spinner.commitValue
-import io.github.dylmeadows.eontimer.util.javafx.spinner.setOnFocusLost
-import io.github.dylmeadows.eontimer.util.javafx.spinner.text
-import io.github.dylmeadows.eontimer.util.javafx.spinner.valueProperty
-import io.github.dylmeadows.eontimer.util.milliseconds
-import io.github.dylmeadows.eontimer.util.setValue
-import io.github.dylmeadows.eontimer.util.showWhen
-import io.github.dylmeadows.eontimer.util.sum
+import io.github.dylmeadows.reaktorfx.source.valuesOf
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
@@ -30,14 +29,14 @@ import org.springframework.stereotype.Component
 
 @Component
 class Gen3TimerPane @Autowired constructor(
-    private val model: Gen3TimerModel,
+    private val model: Gen3Timer,
     private val timerState: TimerState,
     private val timerFactory: Gen3TimerFactory,
     private val timerRunnerService: TimerRunnerService,
     private val calibrationService: CalibrationService) {
 
     @FXML
-    private lateinit var modeField: ChoiceBox<Gen3TimerMode>
+    private lateinit var modeField: ChoiceBox<Gen3Timer.Mode>
     @FXML
     private lateinit var calibrationField: Spinner<Long>
     @FXML
@@ -70,21 +69,21 @@ class Gen3TimerPane @Autowired constructor(
         targetFrameField.valueFactory = LongValueFactory(0)
         targetFrameField.valueProperty!!.bindBidirectional(model.targetFrameProperty)
         targetFrameField.parent.disableProperty().bind(
-            model.modeProperty.isEqualTo(Gen3TimerMode.VARIABLE_TARGET)
+            model.modeProperty.isEqualTo(Gen3Timer.Mode.VARIABLE_TARGET)
                 .and(timerState.runningProperty.not()
                     .or(isPrimedProperty.not()))
-                .or(model.modeProperty.isEqualTo(Gen3TimerMode.STANDARD)
+                .or(model.modeProperty.isEqualTo(Gen3Timer.Mode.STANDARD)
                     .and(timerState.runningProperty)))
         targetFrameField.setOnFocusLost(targetFrameField::commitValue)
 
         setTargetFrameBtn.showWhen(model.modeProperty
-            .isEqualTo(Gen3TimerMode.VARIABLE_TARGET))
+            .isEqualTo(Gen3Timer.Mode.VARIABLE_TARGET))
         setTargetFrameBtn.disableProperty().bind(isPrimedProperty.not())
         setTargetFrameBtn.setOnAction {
             if (timerState.running) {
                 val duration = calibrationService.toMillis(model.targetFrame)
                 timerRunnerService.stages[1] = (duration + model.calibration).milliseconds
-                timerState.totalTime = timerRunnerService.stages.sum()
+                timerState.total.duration = timerRunnerService.stages.sum()
                 isPrimed = false
             }
         }
@@ -95,7 +94,7 @@ class Gen3TimerPane @Autowired constructor(
         frameHitField.setOnFocusLost(frameHitField::commitValue)
         frameHitField.text = ""
 
-        timerState.runningProperty.asFlux()
+        timerState.runningProperty.valuesOf()
             .subscribe { isPrimed = it }
     }
 

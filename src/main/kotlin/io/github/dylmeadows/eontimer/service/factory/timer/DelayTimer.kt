@@ -1,17 +1,17 @@
 package io.github.dylmeadows.eontimer.service.factory.timer
 
+import io.github.dylmeadows.commonkt.core.time.milliseconds
 import io.github.dylmeadows.eontimer.model.timer.TimerConstants
 import io.github.dylmeadows.eontimer.service.CalibrationService
-import io.github.dylmeadows.eontimer.util.milliseconds
-import io.github.dylmeadows.eontimer.util.toMinimumLength
+import io.github.dylmeadows.eontimer.util.extensions.toMinimumLength
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.Duration
 import kotlin.math.absoluteValue
 
 @Service
-class DelayTimerFactory @Autowired constructor(
-    private val secondTimer: SecondTimerFactory,
+class DelayTimer @Autowired constructor(
+    private val secondTimer: SecondTimer,
     private val calibrationService: CalibrationService) {
 
     fun createStages(targetSecond: Long, targetDelay: Long, calibration: Long): List<Duration> {

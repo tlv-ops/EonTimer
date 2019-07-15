@@ -1,14 +1,19 @@
 package io.github.dylmeadows.eontimer.service.factory.timer
 
+import io.github.dylmeadows.commonkt.core.time.INDEFINITE
+import io.github.dylmeadows.commonkt.core.time.milliseconds
 import io.github.dylmeadows.eontimer.service.CalibrationService
-import io.github.dylmeadows.eontimer.util.milliseconds
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.Duration
 
 @Service
-class FixedFrameTimerFactory @Autowired constructor(
+class FrameTimer @Autowired constructor(
     private val calibrationService: CalibrationService) {
+
+    fun createStages(preTimer: Long): List<Duration> {
+        return listOf(preTimer.milliseconds, INDEFINITE)
+    }
 
     fun createStages(preTimer: Long, targetFrame: Long, calibration: Long): List<Duration> {
         return listOf(stage1(preTimer), stage2(targetFrame, calibration))

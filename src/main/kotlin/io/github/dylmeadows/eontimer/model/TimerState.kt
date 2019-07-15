@@ -1,9 +1,10 @@
 package io.github.dylmeadows.eontimer.model
 
-import io.github.dylmeadows.eontimer.util.getValue
-import io.github.dylmeadows.eontimer.util.setValue
-import javafx.beans.property.BooleanProperty
-import javafx.beans.property.ObjectProperty
+import io.github.dylmeadows.commonkt.core.time.isIndefinite
+import io.github.dylmeadows.commonkt.core.time.sum
+import io.github.dylmeadows.commonkt.javafx.beans.property.getValue
+import io.github.dylmeadows.commonkt.javafx.beans.property.setValue
+import io.github.dylmeadows.eontimer.util.extensions.getStage
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
 import org.springframework.stereotype.Component
@@ -11,21 +12,22 @@ import java.time.Duration
 
 @Component
 class TimerState {
-    val totalTimeProperty: ObjectProperty<Duration> = SimpleObjectProperty(Duration.ZERO)
-    var totalTime: Duration by totalTimeProperty
+    val runningProperty = SimpleBooleanProperty(false)
+    var running by runningProperty
 
-    val totalElapsedProperty: ObjectProperty<Duration> = SimpleObjectProperty(Duration.ZERO)
-    var totalElapsed: Duration by totalElapsedProperty
+    val total = TimerStage()
+    val current = TimerStage()
 
-    val currentStageProperty: ObjectProperty<Duration> = SimpleObjectProperty(Duration.ZERO)
-    var currentStage: Duration by currentStageProperty
+    val nextProperty = SimpleObjectProperty(Duration.ZERO)
+    var next: Duration by nextProperty
 
-    val nextStageProperty: ObjectProperty<Duration> = SimpleObjectProperty(Duration.ZERO)
-    var nextStage: Duration by nextStageProperty
-
-    val currentRemainingProperty: ObjectProperty<Duration> = SimpleObjectProperty(Duration.ZERO)
-    var currentRemaining: Duration by currentRemainingProperty
-
-    val runningProperty: BooleanProperty = SimpleBooleanProperty(false)
-    var running: Boolean by runningProperty
+    fun update(stages: List<Duration>) {
+        current.duration = stages.getStage(0)
+        current.elapsed = if (!current.duration.isIndefinite)
+            current.duration
+        else
+            Duration.ZERO
+        next = stages.getStage(1)
+        total.duration = stages.sum()
+    }
 }

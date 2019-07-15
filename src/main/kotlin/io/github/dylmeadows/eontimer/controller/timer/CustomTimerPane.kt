@@ -2,15 +2,14 @@ package io.github.dylmeadows.eontimer.controller.timer
 
 import de.jensd.fx.glyphs.GlyphsDude
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
-import io.github.dylmeadows.eontimer.model.Stage
+import io.github.dylmeadows.commonkt.javafx.node.setOnFocusLost
+import io.github.dylmeadows.commonkt.javafx.node.spinner.LongValueFactory
+import io.github.dylmeadows.commonkt.javafx.node.spinner.commitValue
+import io.github.dylmeadows.commonkt.javafx.node.spinner.text
+import io.github.dylmeadows.commonkt.javafx.node.spinner.textProperty
+import io.github.dylmeadows.eontimer.model.TimerStage
 import io.github.dylmeadows.eontimer.model.TimerState
-import io.github.dylmeadows.eontimer.model.timer.CustomTimerModel
-import io.github.dylmeadows.eontimer.util.StageStringConverter
-import io.github.dylmeadows.eontimer.util.javafx.spinner.LongValueFactory
-import io.github.dylmeadows.eontimer.util.javafx.spinner.commitValue
-import io.github.dylmeadows.eontimer.util.javafx.spinner.setOnFocusLost
-import io.github.dylmeadows.eontimer.util.javafx.spinner.text
-import io.github.dylmeadows.eontimer.util.javafx.spinner.textProperty
+import io.github.dylmeadows.eontimer.model.timer.CustomTimer
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ListView
@@ -18,16 +17,18 @@ import javafx.scene.control.SelectionMode
 import javafx.scene.control.Spinner
 import javafx.scene.control.cell.TextFieldListCell
 import javafx.scene.input.KeyCode
+import javafx.util.StringConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.time.Duration
 
 @Component
 class CustomTimerPane @Autowired constructor(
-    private val model: CustomTimerModel,
+    private val model: CustomTimer,
     private val timerState: TimerState) {
 
     @FXML
-    private lateinit var list: ListView<Stage>
+    private lateinit var list: ListView<TimerStage>
     @FXML
     private lateinit var valueField: Spinner<Long>
     @FXML
@@ -38,14 +39,22 @@ class CustomTimerPane @Autowired constructor(
     fun initialize() {
         list.items = model.stages
         list.selectionModel.selectionMode = SelectionMode.MULTIPLE
-        list.cellFactory = TextFieldListCell.forListView(StageStringConverter())
+        list.cellFactory = TextFieldListCell.forListView(object : StringConverter<TimerStage>() {
+            override fun toString(`object`: TimerStage): String {
+                return `object`.duration.toMillis().toString()
+            }
+
+            override fun fromString(string: String): TimerStage {
+                return TimerStage(Duration.ofMillis(string.toLong()))
+            }
+        })
         list.disableProperty().bind(timerState.runningProperty)
 
         valueField.valueFactory = LongValueFactory(0L)
         valueField.disableProperty().bind(timerState.runningProperty)
         valueField.setOnKeyPressed {
             if (it.code == KeyCode.ENTER) {
-                model.stages.add(Stage(valueField.value))
+                model.stages.add(TimerStage(Duration.ofMillis(valueField.value)))
                 valueField.text = ""
             }
         }
@@ -57,7 +66,7 @@ class CustomTimerPane @Autowired constructor(
             valueField.textProperty.isEmpty
                 .or(timerState.runningProperty))
         valueAddBtn.setOnAction {
-            model.stages.add(Stage(valueField.value))
+            model.stages.add(TimerStage(Duration.ofMillis(valueField.value)))
             valueField.text = ""
         }
 

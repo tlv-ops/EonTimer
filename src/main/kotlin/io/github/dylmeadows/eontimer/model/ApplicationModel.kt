@@ -1,21 +1,25 @@
 package io.github.dylmeadows.eontimer.model
 
-import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel
-import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
-import io.github.dylmeadows.eontimer.model.timer.*
-import io.github.dylmeadows.eontimer.util.getValue
-import io.github.dylmeadows.eontimer.util.setValue
-import javafx.beans.property.ObjectProperty
+import io.github.dylmeadows.commonkt.javafx.beans.property.getValue
+import io.github.dylmeadows.commonkt.javafx.beans.property.setValue
+import io.github.dylmeadows.eontimer.model.settings.ActionSettings
+import io.github.dylmeadows.eontimer.model.settings.TimerSettings
+import io.github.dylmeadows.eontimer.model.timer.CustomTimer
+import io.github.dylmeadows.eontimer.model.timer.Gen3Timer
+import io.github.dylmeadows.eontimer.model.timer.Gen4Timer
+import io.github.dylmeadows.eontimer.model.timer.Gen5Timer
+import io.github.dylmeadows.eontimer.model.timer.TimerConstants
+import io.github.dylmeadows.eontimer.model.timer.TimerType
 import javafx.beans.property.SimpleObjectProperty
 
 class ApplicationModel {
-    var gen3 = Gen3TimerModel()
-    var gen4 = Gen4TimerModel()
-    var gen5 = Gen5TimerModel()
-    var custom = CustomTimerModel()
-    var actionSettings = ActionSettingsModel()
-    var timerSettings = TimerSettingsModel()
+    var gen3 = Gen3Timer()
+    var gen4 = Gen4Timer()
+    var gen5 = Gen5Timer()
+    var custom = CustomTimer()
+    var actionSettings = ActionSettings()
+    var timerSettings = TimerSettings()
 
-    val selectedTimerTypeProperty: ObjectProperty<TimerType> = SimpleObjectProperty(TimerConstants.DEFAULT_TIMER_TYPE)
+    val selectedTimerTypeProperty = SimpleObjectProperty(TimerConstants.DEFAULT_TIMER_TYPE)
     var selectedTimerType: TimerType by selectedTimerTypeProperty
 }

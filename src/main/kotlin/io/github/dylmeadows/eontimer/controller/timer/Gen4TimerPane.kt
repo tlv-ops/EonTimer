@@ -1,16 +1,15 @@
 package io.github.dylmeadows.eontimer.controller.timer
 
+import io.github.dylmeadows.commonkt.javafx.beans.property.bindBidirectional
+import io.github.dylmeadows.commonkt.javafx.node.asChoiceField
+import io.github.dylmeadows.commonkt.javafx.node.setOnFocusLost
+import io.github.dylmeadows.commonkt.javafx.node.spinner.LongValueFactory
+import io.github.dylmeadows.commonkt.javafx.node.spinner.commitValue
+import io.github.dylmeadows.commonkt.javafx.node.spinner.text
+import io.github.dylmeadows.commonkt.javafx.node.spinner.valueProperty
 import io.github.dylmeadows.eontimer.model.TimerState
-import io.github.dylmeadows.eontimer.model.timer.Gen4TimerMode
-import io.github.dylmeadows.eontimer.model.timer.Gen4TimerModel
+import io.github.dylmeadows.eontimer.model.timer.Gen4Timer
 import io.github.dylmeadows.eontimer.service.factory.Gen4TimerFactory
-import io.github.dylmeadows.eontimer.util.bindBidirectional
-import io.github.dylmeadows.eontimer.util.javafx.asChoiceField
-import io.github.dylmeadows.eontimer.util.javafx.spinner.LongValueFactory
-import io.github.dylmeadows.eontimer.util.javafx.spinner.commitValue
-import io.github.dylmeadows.eontimer.util.javafx.spinner.setOnFocusLost
-import io.github.dylmeadows.eontimer.util.javafx.spinner.text
-import io.github.dylmeadows.eontimer.util.javafx.spinner.valueProperty
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.Spinner
@@ -19,12 +18,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class Gen4TimerPane @Autowired constructor(
-    private val model: Gen4TimerModel,
+    private val model: Gen4Timer,
     private val timerState: TimerState,
     private val timerFactory: Gen4TimerFactory) {
 
     @FXML
-    private lateinit var modeField: ChoiceBox<Gen4TimerMode>
+    private lateinit var modeField: ChoiceBox<Gen4Timer.Mode>
     @FXML
     private lateinit var calibratedDelayField: Spinner<Long>
     @FXML

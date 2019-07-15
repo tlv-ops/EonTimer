@@ -1,14 +1,13 @@
 package io.github.dylmeadows.eontimer.service
 
+import io.github.dylmeadows.commonkt.core.time.isIndefinite
+import io.github.dylmeadows.commonkt.core.time.milliseconds
+import io.github.dylmeadows.commonkt.core.time.sum
+import io.github.dylmeadows.commonkt.core.util.asStack
 import io.github.dylmeadows.eontimer.model.TimerState
-import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
+import io.github.dylmeadows.eontimer.model.settings.TimerSettings
 import io.github.dylmeadows.eontimer.service.action.TimerActionService
-import io.github.dylmeadows.eontimer.util.Stack
-import io.github.dylmeadows.eontimer.util.asStack
-import io.github.dylmeadows.eontimer.util.getStage
-import io.github.dylmeadows.eontimer.util.isIndefinite
-import io.github.dylmeadows.eontimer.util.milliseconds
-import io.github.dylmeadows.eontimer.util.sum
+import io.github.dylmeadows.eontimer.util.extensions.getStage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -26,7 +25,7 @@ import java.util.*
 @Service
 class TimerRunnerService @Autowired constructor(
     private val timerState: TimerState,
-    private val timerSettings: TimerSettingsModel,
+    private val timerSettings: TimerSettings,
     private val timerActionService: TimerActionService) {
 
     private lateinit var timerJob: Job
@@ -34,39 +33,21 @@ class TimerRunnerService @Autowired constructor(
         private set
     private var mStages: List<Duration> = Collections.emptyList()
 
-    private var totalTime: Duration
-        get() = timerState.totalTime
+    private val total get() = timerState.total
+    private val current get() = timerState.current
+    private var next
+        get() = timerState.next
         set(value) {
-            timerState.totalTime = value
+            timerState.next = value
         }
-    private var totalElapsed: Duration
-        get() = timerState.totalElapsed
-        set(value) {
-            timerState.totalElapsed = value
-        }
-    private var currentStage: Duration
-        get() = timerState.currentStage
-        set(value) {
-            timerState.currentStage = value
-        }
-    private var currentRemaining: Duration
-        get() = timerState.currentRemaining
-        set(value) {
-            timerState.currentRemaining = value
-        }
-    private var nextStage: Duration
-        get() = timerState.nextStage
-        set(value) {
-            timerState.nextStage = value
-        }
-    private var isRunning: Boolean
+    private var isRunning
         get() = timerState.running
         private set(value) {
             timerState.running = value
         }
-    private val actionInterval: Stack<Duration>
+    private val actionInterval
         get() = timerActionService.actionInterval
-            .filter { it < currentStage }
+            .filter { it < current.duration }
             .asStack()
 
     private val period: Duration get() = timerSettings.refreshInterval.milliseconds
@@ -92,10 +73,10 @@ class TimerRunnerService @Autowired constructor(
         var elapsed = preElapsed
         var adjustedDelay = period
         var lastTimestamp = Instant.now()
-        currentStage = stages.getStage(stageIndex)
+        current.duration = stages.getStage(stageIndex)
 
         val actionInterval = this.actionInterval
-        while (scope.isActive && elapsed < currentStage) {
+        while (scope.isActive && elapsed < current.duration) {
             delay(adjustedDelay.toMillis())
 
             val now = Instant.now()
@@ -105,7 +86,7 @@ class TimerRunnerService @Autowired constructor(
             elapsed += delta
 
             updateState(stageIndex, delta, elapsed)
-            if (!currentStage.isIndefinite && currentRemaining <= actionInterval.peek()) {
+            if (!current.duration.isIndefinite && current.elapsed <= actionInterval.peek()) {
                 timerActionService.invokeAction()
                 actionInterval.pop()
             }
@@ -124,24 +105,22 @@ class TimerRunnerService @Autowired constructor(
     private fun updateState(stageIndex: Int = 0,
                             delta: Duration = Duration.ZERO,
                             elapsed: Duration = Duration.ZERO) {
-        currentStage = stages.getStage(stageIndex)
-        currentRemaining = if (!currentStage.isIndefinite)
-            currentStage - elapsed
+        current.duration = stages.getStage(stageIndex)
+        current.elapsed = if (!current.duration.isIndefinite)
+            current.duration - elapsed
         else
             elapsed
-        totalElapsed += delta
+        total.elapsed += delta
     }
 
     private fun resetState(stages: List<Duration> = this.mStages) {
         this.mStages = stages
         this.stages = stages.toMutableList()
 
-        totalTime = mStages.sum()
-        totalElapsed = Duration.ZERO
-        currentStage = mStages.getStage(0)
-        currentRemaining = if (!currentStage.isIndefinite) currentStage else Duration.ZERO
-        nextStage = mStages.getStage(1)
+        total.duration = mStages.sum()
+        total.elapsed = Duration.ZERO
+        current.duration = mStages.getStage(0)
+        current.elapsed = if (!current.duration.isIndefinite) current.duration else Duration.ZERO
+        next = mStages.getStage(1)
     }
-
-
 }

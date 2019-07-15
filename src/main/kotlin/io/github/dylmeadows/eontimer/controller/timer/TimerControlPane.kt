@@ -4,8 +4,8 @@ import io.github.dylmeadows.eontimer.model.ApplicationModel
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.TimerType
 import io.github.dylmeadows.eontimer.service.TimerRunnerService
-import io.github.dylmeadows.eontimer.service.factory.TimerFactoryService
-import io.github.dylmeadows.eontimer.util.asFlux
+import io.github.dylmeadows.eontimer.service.factory.ApplicationTimerFactory
+import io.github.dylmeadows.reaktorfx.source.valuesOf
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.Tab
@@ -18,7 +18,7 @@ class TimerControlPane @Autowired constructor(
     private val model: ApplicationModel,
     private val timerState: TimerState,
     private val timerRunner: TimerRunnerService,
-    private val timerFactory: TimerFactoryService,
+    private val applicationTimerFactory: ApplicationTimerFactory,
     private val gen3TimerPane: Gen3TimerPane,
     private val gen4TimerPane: Gen4TimerPane,
     private val gen5TimerPane: Gen5TimerPane) {
@@ -46,7 +46,7 @@ class TimerControlPane @Autowired constructor(
 
     fun initialize() {
         timerTabPane.selectionModel.select(timerType.tab)
-        timerTabPane.selectionModel.selectedItemProperty().asFlux()
+        timerTabPane.selectionModel.selectedItemProperty().valuesOf()
             .map { it.timerType }
             .subscribe {
                 timerType = it
@@ -65,12 +65,12 @@ class TimerControlPane @Autowired constructor(
             timerTabPane.selectionModel.selectedItemProperty().isNotEqualTo(customTab)
                 .and(timerState.runningProperty))
 
-        timerState.runningProperty.asFlux()
+        timerState.runningProperty.valuesOf()
             .map { if (!it) "Start" else "Stop" }
             .subscribe { timerBtn.text = it }
         timerBtn.setOnAction {
             if (!timerState.running) {
-                timerRunner.start(timerFactory.stages)
+                timerRunner.start(applicationTimerFactory.stages)
             } else {
                 timerRunner.stop()
             }

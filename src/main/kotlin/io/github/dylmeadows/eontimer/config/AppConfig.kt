@@ -1,72 +1,53 @@
 package io.github.dylmeadows.eontimer.config
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import io.github.dylmeadows.eontimer.model.ApplicationModel
-import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel
-import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
-import io.github.dylmeadows.eontimer.model.timer.CustomTimerModel
-import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
-import io.github.dylmeadows.eontimer.model.timer.Gen4TimerModel
-import io.github.dylmeadows.eontimer.model.timer.Gen5TimerModel
-import io.github.dylmeadows.eontimer.util.gson.ApplicationModelAdapter
+import io.github.dylmeadows.eontimer.model.settings.ActionSettings
+import io.github.dylmeadows.eontimer.model.settings.TimerSettings
+import io.github.dylmeadows.eontimer.model.timer.CustomTimer
+import io.github.dylmeadows.eontimer.model.timer.Gen3Timer
+import io.github.dylmeadows.eontimer.model.timer.Gen4Timer
+import io.github.dylmeadows.eontimer.model.timer.Gen5Timer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import java.io.File
 import javax.annotation.PreDestroy
 
 @Configuration
 @EnableConfigurationProperties(AppProperties::class)
 open class AppConfig @Autowired constructor(
     private val properties: AppProperties,
-    private val context: ApplicationContext) {
+    private val ctx: ApplicationContext) {
 
     @PreDestroy
     private fun destroy() {
-        val gson = context.getBean(Gson::class.java)
-        val settings = context.getBean(ApplicationModel::class.java)
-        // persist settings
-        val json = gson.toJson(settings)
+        /*val gson = ctx.getBean(Gson::class.java)
+        val settings = ctx.getBean(ApplicationModel::class.java)
         File("${properties.name}.json")
-            .writeText(json)
+            .writeText(gson.toJson(settings))*/
     }
 
     @Bean
-    open fun gson(builder: GsonBuilder,
-                  applicationModelAdapter: ApplicationModelAdapter): Gson {
-        return builder.setPrettyPrinting()
-            .registerTypeAdapter(ApplicationModel::class.java, applicationModelAdapter)
-            .create()
+    open fun settings(): ApplicationModel {
+        return ApplicationModel()
     }
 
     @Bean
-    open fun settings(gson: Gson): ApplicationModel {
-        val file = File("${properties.name}.json")
-        return if (file.exists()) {
-            gson.fromJson(file.readText(), ApplicationModel::class.java)
-        } else {
-            ApplicationModel()
-        }
-    }
+    open fun gen3Timer(settings: ApplicationModel): Gen3Timer = settings.gen3
 
     @Bean
-    open fun gen3TimerModel(settings: ApplicationModel): Gen3TimerModel = settings.gen3
+    open fun gen4Timer(settings: ApplicationModel): Gen4Timer = settings.gen4
 
     @Bean
-    open fun gen4TimerModel(settings: ApplicationModel): Gen4TimerModel = settings.gen4
+    open fun gen5Timer(settings: ApplicationModel): Gen5Timer = settings.gen5
 
     @Bean
-    open fun gen5TimerModel(settings: ApplicationModel): Gen5TimerModel = settings.gen5
+    open fun customTimer(settings: ApplicationModel): CustomTimer = settings.custom
 
     @Bean
-    open fun customTimerModel(settings: ApplicationModel): CustomTimerModel = settings.custom
+    open fun actionSettings(settings: ApplicationModel): ActionSettings = settings.actionSettings
 
     @Bean
-    open fun actionSettingsModel(settings: ApplicationModel): ActionSettingsModel = settings.actionSettings
-
-    @Bean
-    open fun timerSettingsModel(settings: ApplicationModel): TimerSettingsModel = settings.timerSettings
+    open fun timerSettings(settings: ApplicationModel): TimerSettings = settings.timerSettings
 }

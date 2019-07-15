@@ -1,26 +1,26 @@
 package io.github.dylmeadows.eontimer.controller
 
-import io.github.dylmeadows.common.javafx.scene.paint.Colors
+import io.github.dylmeadows.commonkt.core.time.INDEFINITE
+import io.github.dylmeadows.commonkt.core.time.toSeconds
+import io.github.dylmeadows.commonkt.javafx.scene.paint.toHex
 import io.github.dylmeadows.eontimer.model.TimerState
-import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel
+import io.github.dylmeadows.eontimer.model.settings.ActionSettings
 import io.github.dylmeadows.eontimer.service.action.TimerActionService
-import io.github.dylmeadows.eontimer.util.INDEFINITE
-import io.github.dylmeadows.eontimer.util.JavaFxScheduler
-import io.github.dylmeadows.eontimer.util.anyChangesOf
-import io.github.dylmeadows.eontimer.util.asFlux
-import io.github.dylmeadows.eontimer.util.isActive
-import io.github.dylmeadows.eontimer.util.toSeconds
+import io.github.dylmeadows.reaktorfx.scheduler.JavaFxScheduler
+import io.github.dylmeadows.reaktorfx.source.combineWith
+import io.github.dylmeadows.reaktorfx.source.valuesOf
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import reactor.util.function.Tuples
 import java.time.Duration
 
 @Component
 class TimerDisplayPane @Autowired constructor(
     private val timerState: TimerState,
     private val timerActionService: TimerActionService,
-    private val actionSettingsModel: ActionSettingsModel) {
+    private val actionSettings: ActionSettings) {
 
     @FXML
     lateinit var currentStageLbl: Label
@@ -30,32 +30,29 @@ class TimerDisplayPane @Autowired constructor(
     lateinit var nextStageLbl: Label
 
     fun initialize() {
-        timerState.currentStageProperty.asFlux()
-            .subscribeOn(JavaFxScheduler.platform())
-            .map(this::formatTime)
-            .subscribe(currentStageLbl::setText)
-        timerState.currentRemainingProperty.asFlux()
-            .subscribeOn(JavaFxScheduler.platform())
-            .map(this::formatTime)
-            .subscribe(currentStageLbl::setText)
-        anyChangesOf(
-            timerState.totalTimeProperty,
-            timerState.totalElapsedProperty)
-            .subscribeOn(JavaFxScheduler.platform())
+        timerState.total.durationProperty.combineWith(timerState.total.elapsedProperty, Tuples::of)
+            .subscribeOn(JavaFxScheduler.platform)
             .subscribe {
                 minutesBeforeTargetLbl.text =
-                    formatMinutesBeforeTarget(it.t1, it.t2)
+                    formatMinutesBeforeTarget(it.t1!!, it.t2!!)
             }
-        timerState.nextStageProperty.asFlux()
-            .subscribeOn(JavaFxScheduler.platform())
+        timerState.current.durationProperty.valuesOf()
+            .subscribeOn(JavaFxScheduler.platform)
+            .map(this::formatTime)
+            .subscribe(currentStageLbl::setText)
+        timerState.current.elapsedProperty.valuesOf()
+            .subscribeOn(JavaFxScheduler.platform)
+            .map(this::formatTime)
+            .subscribe(currentStageLbl::setText)
+        timerState.nextProperty.valuesOf()
+            .subscribeOn(JavaFxScheduler.platform)
             .map(this::formatTime)
             .subscribe(nextStageLbl::setText)
-        timerActionService.activeProperty.asFlux()
-            .subscribe { currentStageLbl.isActive = it }
 
-        actionSettingsModel.colorProperty.asFlux()
-            .map { Colors.toHex(it) }
-            .map { "-theme-active: $it" }
+        timerActionService.activeProperty.valuesOf()
+            .subscribe { currentStageLbl.isActive = it }
+        actionSettings.colorProperty.valuesOf()
+            .map { "-theme-active: ${it.toHex()}" }
             .subscribe(currentStageLbl::setStyle)
     }
 
@@ -78,4 +75,13 @@ class TimerDisplayPane @Autowired constructor(
                     / 10 % 100)
         }
     }
+
+    var Label.isActive: Boolean
+        get() = this.styleClass.contains("active")
+        set(value) {
+            when (value) {
+                true -> styleClass.add("active")
+                false -> styleClass.remove("active")
+            }
+        }
 }
