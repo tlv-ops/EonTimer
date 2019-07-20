@@ -1,16 +1,25 @@
 package io.github.dylmeadows.eontimer.model
 
-import io.github.dylmeadows.commonkt.javafx.beans.property.getValue
-import io.github.dylmeadows.commonkt.javafx.beans.property.setValue
-import javafx.beans.property.SimpleObjectProperty
 import java.time.Duration
 
-class TimerStage(duration: Duration = Duration.ZERO,
-                 elapsed: Duration = Duration.ZERO) {
+data class TimerStage(val duration: Duration = Duration.ZERO,
+                      val elapsed: Duration = Duration.ZERO) {
+    val remaining: Duration get() = duration - elapsed
 
-    val durationProperty = SimpleObjectProperty(duration)
-    var duration: Duration by durationProperty
+    operator fun plus(duration: Duration): TimerStage {
+        return TimerStage(this.duration, elapsed + duration)
+    }
 
-    val elapsedProperty = SimpleObjectProperty(elapsed)
-    var elapsed: Duration by elapsedProperty
+    fun withDuration(duration: Duration): TimerStage {
+        return TimerStage(duration, elapsed)
+    }
+
+    fun withElapsed(elapsed: Duration): TimerStage {
+        return TimerStage(duration, elapsed)
+    }
+
+    companion object {
+        @JvmField
+        val ZERO = TimerStage()
+    }
 }

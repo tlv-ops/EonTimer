@@ -1,11 +1,13 @@
 package io.github.dylmeadows.eontimer.controller.timer
 
 import io.github.dylmeadows.eontimer.model.ApplicationModel
-import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.TimerType
 import io.github.dylmeadows.eontimer.service.TimerRunnerService
 import io.github.dylmeadows.eontimer.service.factory.ApplicationTimerFactory
+import io.github.dylmeadows.reaktorfx.observer.asBinding
+import io.github.dylmeadows.reaktorfx.scheduler.JavaFxScheduler
 import io.github.dylmeadows.reaktorfx.source.valuesOf
+import javafx.beans.binding.BooleanBinding
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.Tab
@@ -16,9 +18,7 @@ import org.springframework.stereotype.Component
 @Component
 class TimerControlPane @Autowired constructor(
     private val model: ApplicationModel,
-    private val timerState: TimerState,
-    private val timerRunner: TimerRunnerService,
-    private val applicationTimerFactory: ApplicationTimerFactory,
+    private val timerRunnerService: TimerRunnerService,
     private val gen3TimerPane: Gen3TimerPane,
     private val gen4TimerPane: Gen4TimerPane,
     private val gen5TimerPane: Gen5TimerPane) {
@@ -45,6 +45,11 @@ class TimerControlPane @Autowired constructor(
         }
 
     fun initialize() {
+        val runningProperty = BooleanBinding.booleanExpression(
+            timerRunnerService.onStartStop
+                .publishOn(JavaFxScheduler.platform)
+                .asBinding())
+
         timerTabPane.selectionModel.select(timerType.tab)
         timerTabPane.selectionModel.selectedItemProperty().valuesOf()
             .map { it.timerType }
@@ -54,30 +59,29 @@ class TimerControlPane @Autowired constructor(
 
         gen3Tab.disableProperty().bind(
             timerTabPane.selectionModel.selectedItemProperty().isNotEqualTo(gen3Tab)
-                .and(timerState.runningProperty))
+                .and(runningProperty))
         gen4Tab.disableProperty().bind(
             timerTabPane.selectionModel.selectedItemProperty().isNotEqualTo(gen4Tab)
-                .and(timerState.runningProperty))
+                .and(runningProperty))
         gen5Tab.disableProperty().bind(
             timerTabPane.selectionModel.selectedItemProperty().isNotEqualTo(gen5Tab)
-                .and(timerState.runningProperty))
+                .and(runningProperty))
         customTab.disableProperty().bind(
             timerTabPane.selectionModel.selectedItemProperty().isNotEqualTo(customTab)
-                .and(timerState.runningProperty))
+                .and(runningProperty))
 
-        timerState.runningProperty.valuesOf()
+        runningProperty.valuesOf()
             .map { if (!it) "Start" else "Stop" }
             .subscribe { timerBtn.text = it }
         timerBtn.setOnAction {
-            if (!timerState.running) {
-                timerRunner.start(applicationTimerFactory.stages)
+            if (!timerRunnerService.isRunning) {
+                timerRunnerService.start()
             } else {
-                timerRunner.stop()
+                timerRunnerService.stop()
             }
         }
 
-        updateBtn.disableProperty().bind(
-            timerState.runningProperty)
+        updateBtn.disableProperty().bind(runningProperty)
         updateBtn.setOnAction {
             calibrate()
         }

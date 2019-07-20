@@ -1,24 +1,21 @@
 package io.github.dylmeadows.eontimer.controller
 
-import io.github.dylmeadows.commonkt.core.time.INDEFINITE
-import io.github.dylmeadows.commonkt.core.time.toSeconds
+import io.github.dylmeadows.commonkt.core.time.isIndefinite
 import io.github.dylmeadows.commonkt.javafx.scene.paint.toHex
-import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.settings.ActionSettings
-import io.github.dylmeadows.eontimer.service.action.TimerActionService
+import io.github.dylmeadows.eontimer.service.TimerRunnerService
+import io.github.dylmeadows.eontimer.service.TimerActionService
 import io.github.dylmeadows.reaktorfx.scheduler.JavaFxScheduler
-import io.github.dylmeadows.reaktorfx.source.combineWith
 import io.github.dylmeadows.reaktorfx.source.valuesOf
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import reactor.util.function.Tuples
 import java.time.Duration
 
 @Component
 class TimerDisplayPane @Autowired constructor(
-    private val timerState: TimerState,
+    private val timerRunnerService: TimerRunnerService,
     private val timerActionService: TimerActionService,
     private val actionSettings: ActionSettings) {
 
@@ -30,25 +27,13 @@ class TimerDisplayPane @Autowired constructor(
     lateinit var nextStageLbl: Label
 
     fun initialize() {
-        timerState.total.durationProperty.combineWith(timerState.total.elapsedProperty, Tuples::of)
-            .subscribeOn(JavaFxScheduler.platform)
+        timerRunnerService.onUpdate
+            .publishOn(JavaFxScheduler.platform)
             .subscribe {
-                minutesBeforeTargetLbl.text =
-                    formatMinutesBeforeTarget(it.t1!!, it.t2!!)
+                currentStageLbl.text = formatSeconds(it.current.remaining)
+                minutesBeforeTargetLbl.text = formatMinutes(it.total.remaining)
+                nextStageLbl.text = formatSeconds(it.next)
             }
-        timerState.current.durationProperty.valuesOf()
-            .subscribeOn(JavaFxScheduler.platform)
-            .map(this::formatTime)
-            .subscribe(currentStageLbl::setText)
-        timerState.current.elapsedProperty.valuesOf()
-            .subscribeOn(JavaFxScheduler.platform)
-            .map(this::formatTime)
-            .subscribe(currentStageLbl::setText)
-        timerState.nextProperty.valuesOf()
-            .subscribeOn(JavaFxScheduler.platform)
-            .map(this::formatTime)
-            .subscribe(nextStageLbl::setText)
-
         timerActionService.activeProperty.valuesOf()
             .subscribe { currentStageLbl.isActive = it }
         actionSettings.colorProperty.valuesOf()
@@ -56,23 +41,21 @@ class TimerDisplayPane @Autowired constructor(
             .subscribe(currentStageLbl::setStyle)
     }
 
-    private fun formatMinutesBeforeTarget(totalTime: Duration, totalElapsed: Duration): String {
-        return when (totalTime) {
-            INDEFINITE -> "?"
-            else -> {
-                val remaining = totalTime - totalElapsed
-                remaining.toMinutes().toString()
-            }
+    private fun formatSeconds(duration: Duration): String {
+        return when {
+            !duration.isIndefinite ->
+                String.format("%d:%03d",
+                    duration.toSeconds(),
+                    duration.toMillis() % 1000)
+            else -> "?:???"
         }
     }
 
-    private fun formatTime(duration: Duration): String {
-        return when (duration) {
-            INDEFINITE -> "?:??"
-            else -> String.format("%d:%02d",
-                duration.toSeconds(),
-                duration.toMillis()
-                    / 10 % 100)
+    private fun formatMinutes(duration: Duration): String {
+        return when {
+            !duration.isIndefinite ->
+                duration.toMinutes().toString()
+            else -> "?"
         }
     }
 

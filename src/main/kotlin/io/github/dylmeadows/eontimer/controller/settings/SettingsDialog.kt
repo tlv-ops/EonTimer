@@ -2,7 +2,6 @@ package io.github.dylmeadows.eontimer.controller.settings
 
 import io.github.dylmeadows.eontimer.config.AppProperties
 import io.github.dylmeadows.eontimer.model.resource.FxmlResource
-import io.github.dylmeadows.eontimer.util.extensions.load
 import io.github.dylmeadows.springboot.javafx.fxml.SpringFxmlLoader
 import javafx.scene.Parent
 import javafx.scene.control.ButtonType
@@ -19,7 +18,7 @@ class SettingsDialog @Autowired constructor(
 
     fun showAndWait() {
         val dialog = Dialog<Void>()
-        dialog.title = properties.fullApplicationName
+        dialog.title = "${properties.name} v${properties.version}"
         dialog.dialogPane.content = settingsControlPane
         dialog.dialogPane.buttonTypes.setAll(ButtonType.OK)
         dialog.showAndWait()

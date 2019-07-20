@@ -8,14 +8,12 @@ import io.github.dylmeadows.eontimer.model.timer.Gen3Timer
 import io.github.dylmeadows.eontimer.model.timer.Gen4Timer
 import io.github.dylmeadows.eontimer.model.timer.Gen5Timer
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import javax.annotation.PreDestroy
 
 @Configuration
-@EnableConfigurationProperties(AppProperties::class)
 open class AppConfig @Autowired constructor(
     private val properties: AppProperties,
     private val ctx: ApplicationContext) {

@@ -12,7 +12,7 @@
             <pattern>${FILE_LOG_PATTERN}</pattern>
             <charset>utf8</charset>
         </encoder>
-        <file>EonTimer.log</file>
+        <file>${application.name}.log</file>
         <append>false</append>
     </appender>
 

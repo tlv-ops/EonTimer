@@ -10,6 +10,10 @@ import io.github.dylmeadows.commonkt.javafx.node.spinner.textProperty
 import io.github.dylmeadows.eontimer.model.TimerStage
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.CustomTimer
+import io.github.dylmeadows.eontimer.service.TimerRunnerService
+import io.github.dylmeadows.reaktorfx.observer.asBinding
+import io.github.dylmeadows.reaktorfx.scheduler.JavaFxScheduler
+import javafx.beans.binding.BooleanBinding
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ListView
@@ -25,7 +29,7 @@ import java.time.Duration
 @Component
 class CustomTimerPane @Autowired constructor(
     private val model: CustomTimer,
-    private val timerState: TimerState) {
+    private val timerRunnerService: TimerRunnerService) {
 
     @FXML
     private lateinit var list: ListView<TimerStage>
@@ -37,6 +41,11 @@ class CustomTimerPane @Autowired constructor(
     private lateinit var valueRemoveBtn: Button
 
     fun initialize() {
+        val runningProperty = BooleanBinding.booleanExpression(
+            timerRunnerService.onStartStop
+                .publishOn(JavaFxScheduler.platform)
+                .asBinding())
+
         list.items = model.stages
         list.selectionModel.selectionMode = SelectionMode.MULTIPLE
         list.cellFactory = TextFieldListCell.forListView(object : StringConverter<TimerStage>() {
@@ -48,10 +57,10 @@ class CustomTimerPane @Autowired constructor(
                 return TimerStage(Duration.ofMillis(string.toLong()))
             }
         })
-        list.disableProperty().bind(timerState.runningProperty)
+        list.disableProperty().bind(runningProperty)
 
         valueField.valueFactory = LongValueFactory(0L)
-        valueField.disableProperty().bind(timerState.runningProperty)
+        valueField.disableProperty().bind(runningProperty)
         valueField.setOnKeyPressed {
             if (it.code == KeyCode.ENTER) {
                 model.stages.add(TimerStage(Duration.ofMillis(valueField.value)))
@@ -64,7 +73,7 @@ class CustomTimerPane @Autowired constructor(
         valueAddBtn.graphic = GlyphsDude.createIcon(FontAwesomeIcon.PLUS)
         valueAddBtn.disableProperty().bind(
             valueField.textProperty.isEmpty
-                .or(timerState.runningProperty))
+                .or(runningProperty))
         valueAddBtn.setOnAction {
             model.stages.add(TimerStage(Duration.ofMillis(valueField.value)))
             valueField.text = ""
@@ -73,7 +82,7 @@ class CustomTimerPane @Autowired constructor(
         valueRemoveBtn.graphic = GlyphsDude.createIcon(FontAwesomeIcon.MINUS)
         valueRemoveBtn.disableProperty().bind(
             list.selectionModel.selectedItemProperty().isNull
-                .or(timerState.runningProperty))
+                .or(runningProperty))
         valueRemoveBtn.setOnAction {
             list.selectionModel.selectedIndices
                 .map { model.stages[it] }
