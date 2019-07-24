@@ -1,28 +1,27 @@
 plugins {
-    id 'java'
     id 'application'
     id 'org.jetbrains.kotlin.jvm' version '1.3.41'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
 }
 
 repositories {
+    maven { url "https://oss.jfrog.org/artifactory/libs-snapshot" }
     mavenCentral()
-    maven {
-        url "https://oss.jfrog.org/artifactory/libs-snapshot"
-    }
+}
+
+javafx {
+    version = '11.0.2'
+    modules = [
+        'javafx.controls',
+        'javafx.media',
+        'javafx.fxml'
+    ]
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.1.1"
-    implementation("io.github.dylmeadows:spring-boot-starter-javafx:0.0.1-SNAPSHOT") { changing = true }
-    implementation "org.openjfx:javafx-controls:$openjfx_version"
-    implementation "org.openjfx:javafx-media:$openjfx_version"
-    implementation "org.openjfx:javafx-fxml:$openjfx_version"
-    
-    runtime "org.openjfx:javafx-controls:$openjfx_version:mac"
-    runtime "org.openjfx:javafx-media:$openjfx_version:mac"
-    runtime "org.openjfx:javafx-fxml:$openjfx_version:mac"
-
+    implementation("io.github.dylmeadows:spring-boot-starter-javafx:2.1.6-SNAPSHOT") { changing = true }
     implementation "de.jensd:fontawesomefx:8.9"
 
     testImplementation "junit:junit:4.12"
@@ -39,11 +38,11 @@ application {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = '11'
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = '11'
 }
 
 processResources {

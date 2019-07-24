@@ -1,5 +1,6 @@
 package io.github.dylmeadows.eontimer.service
 
+import io.github.dylmeadows.commonkt.core.time.isIndefinite
 import io.github.dylmeadows.commonkt.javafx.beans.property.getValue
 import io.github.dylmeadows.commonkt.javafx.beans.property.setValue
 import io.github.dylmeadows.eontimer.model.settings.ActionMode
@@ -42,12 +43,14 @@ class TimerActionService @Autowired constructor(
             .publishOn(JavaFxScheduler.platform)
             .filter { it.current.remaining <= actionInterval[nextAction] }
             .subscribe {
-                invokeAction()
-                nextAction = when {
-                    nextAction + 1 < actionInterval.size ->
-                        nextAction + 1
-                    else ->
-                        0
+                if (it.current.duration.isIndefinite || it.current.duration > Duration.ZERO) {
+                    invokeAction()
+                    nextAction = when {
+                        nextAction + 1 < actionInterval.size ->
+                            nextAction + 1
+                        else ->
+                            0
+                    }
                 }
             }
         timerRunnerService.onStartStop
@@ -67,9 +70,7 @@ class TimerActionService @Autowired constructor(
 
     private fun invokeAction() {
         if (timerActionSettings.mode == ActionMode.AUDIO || timerActionSettings.mode == ActionMode.AV)
-            GlobalScope.launch {
-                soundPlayer.play()
-            }
+            soundPlayer.play()
         if (timerActionSettings.mode == ActionMode.VISUAL || timerActionSettings.mode == ActionMode.AV) {
             active = true
             GlobalScope.launch {

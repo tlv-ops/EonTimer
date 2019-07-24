@@ -4,7 +4,6 @@ import io.github.dylmeadows.commonkt.javafx.beans.property.bindBidirectional
 import io.github.dylmeadows.commonkt.javafx.node.asChoiceField
 import io.github.dylmeadows.commonkt.javafx.node.setOnFocusLost
 import io.github.dylmeadows.commonkt.javafx.node.spinner.LongValueFactory
-import io.github.dylmeadows.commonkt.javafx.node.spinner.commitValue
 import io.github.dylmeadows.commonkt.javafx.node.spinner.valueProperty
 import io.github.dylmeadows.eontimer.model.settings.Console
 import io.github.dylmeadows.eontimer.model.settings.TimerSettings

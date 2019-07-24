@@ -4,7 +4,6 @@ import de.jensd.fx.glyphs.GlyphsDude
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import io.github.dylmeadows.commonkt.javafx.node.setOnFocusLost
 import io.github.dylmeadows.commonkt.javafx.node.spinner.LongValueFactory
-import io.github.dylmeadows.commonkt.javafx.node.spinner.commitValue
 import io.github.dylmeadows.commonkt.javafx.node.spinner.text
 import io.github.dylmeadows.commonkt.javafx.node.spinner.textProperty
 import io.github.dylmeadows.eontimer.model.TimerStage

@@ -5,10 +5,8 @@ import io.github.dylmeadows.commonkt.javafx.node.asChoiceField
 import io.github.dylmeadows.commonkt.javafx.node.setOnFocusLost
 import io.github.dylmeadows.commonkt.javafx.node.showWhen
 import io.github.dylmeadows.commonkt.javafx.node.spinner.LongValueFactory
-import io.github.dylmeadows.commonkt.javafx.node.spinner.commitValue
 import io.github.dylmeadows.commonkt.javafx.node.spinner.text
 import io.github.dylmeadows.commonkt.javafx.node.spinner.valueProperty
-import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.Gen5Timer
 import io.github.dylmeadows.eontimer.service.TimerRunnerService
 import io.github.dylmeadows.eontimer.service.factory.Gen5TimerFactory

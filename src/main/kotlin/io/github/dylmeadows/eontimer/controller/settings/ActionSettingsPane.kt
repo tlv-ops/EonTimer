@@ -3,12 +3,11 @@ package io.github.dylmeadows.eontimer.controller.settings
 import io.github.dylmeadows.commonkt.javafx.beans.property.bindBidirectional
 import io.github.dylmeadows.commonkt.javafx.node.asChoiceField
 import io.github.dylmeadows.commonkt.javafx.node.setOnFocusLost
-import io.github.dylmeadows.commonkt.javafx.node.spinner.commitValue
+import io.github.dylmeadows.commonkt.javafx.node.spinner.IntValueFactory
 import io.github.dylmeadows.commonkt.javafx.node.spinner.valueProperty
 import io.github.dylmeadows.eontimer.model.resource.Sound
 import io.github.dylmeadows.eontimer.model.settings.ActionMode
 import io.github.dylmeadows.eontimer.model.settings.ActionSettings
-import io.github.dylmeadows.eontimer.util.javafx.spinner.IntValueFactory
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.ColorPicker
