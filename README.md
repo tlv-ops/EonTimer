@@ -11,21 +11,7 @@ A Kotlin port of the Pokémon RNG Timer originally written by
 The latest release can be downloaded under the [releases](https://github.com/dylmeadows/EonTimer/releases) section of the EonTimer repository.
 
 ## Building from Source
-EonTimer is built using [Java Development Kit 11](https://adoptopenjdk.net/). Allow other dependencies 
-(JavaFX, Kotlin, etc.) are handled through the included gradle wrapper.
+See the [Build from Source](https://github.com/dylmeadows/EonTimer/wiki/Build-from-Source) Wiki page and the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
-#### Windows
-```bash
-git clone https://github.com/dylmeadows/EonTimer
-cd EonTimer
-gradlew.bat clean build run
-```
-
-#### MacOS / Linux
-```bash
-git clone https://github.com/dylmeadows/EonTimer 
-cd EonTimer
-./gradlew clean build run
-```
-
-## Contributing
+## License
+EonTimer is released under the [MIT License](LICENSE.md).
