@@ -8,6 +8,14 @@ plugins {
     id 'org.jlleitschuh.gradle.ktlint-idea' version '8.2.0'
 }
 
+group = 'io.github.dylmeadows'
+version = '2.0.2-SNAPSHOT'
+
+ext.testfx_version = '4.0.13-alpha'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
 repositories {
     maven { url "https://oss.jfrog.org/artifactory/libs-snapshot" }
     mavenCentral()
@@ -42,11 +50,11 @@ application {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = '11'
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = '11'
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
 }
 
 processResources {
