@@ -11,7 +11,8 @@ import java.time.Duration
 class Gen4TimerFactory @Autowired constructor(
     private val gen4Timer: Gen4Timer,
     private val delayTimer: DelayTimer,
-    private val calibrationService: CalibrationService) : TimerFactory {
+    private val calibrationService: CalibrationService
+) : TimerFactory {
 
     private val calibration: Long
         get() = calibrationService.createCalibration(gen4Timer.calibratedDelay, gen4Timer.calibratedSecond)

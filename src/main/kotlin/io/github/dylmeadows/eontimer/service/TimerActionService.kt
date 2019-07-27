@@ -15,7 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import reactor.util.function.Tuples
 import java.time.Duration
 import java.util.*
 
@@ -23,7 +22,8 @@ import java.util.*
 class TimerActionService @Autowired constructor(
     timerRunnerService: TimerRunnerService,
     private val timerActionSettings: ActionSettings,
-    private val soundPlayer: SoundPlayer) {
+    private val soundPlayer: SoundPlayer
+) {
 
     private var actionInterval: List<Duration> = Collections.emptyList()
     private var nextAction = 0
@@ -33,10 +33,9 @@ class TimerActionService @Autowired constructor(
 
     init {
         timerActionSettings.countProperty
-            .combineWith(timerActionSettings.intervalProperty, Tuples::of)
-            .map { it.mapT1 { t1 -> t1!!.toInt() } }
-            .map { it.mapT2 { t2 -> t2!!.toInt() } }
-            .map { createActionInterval(it.t1, it.t2) }
+            .combineWith(timerActionSettings.intervalProperty) { count, interval ->
+                createActionInterval(count!!.toInt(), interval!!.toInt())
+            }
             .subscribe { actionInterval = it }
 
         timerRunnerService.onUpdate
@@ -62,7 +61,7 @@ class TimerActionService @Autowired constructor(
 
     private fun createActionInterval(count: Int, interval: Int): List<Duration> {
         return IntRange(0, count - 1)
-            .toList().asReversed()
+            .reversed()
             .map { it * interval }
             .map(Number::toLong)
             .map(Duration::ofMillis)

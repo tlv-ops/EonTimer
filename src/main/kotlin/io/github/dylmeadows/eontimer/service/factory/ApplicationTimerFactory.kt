@@ -7,7 +7,6 @@ import io.github.dylmeadows.eontimer.service.TimerRunnerService
 import io.github.dylmeadows.reaktorfx.source.valuesOf
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.time.Duration
 import javax.annotation.PostConstruct
 
 @Component
@@ -18,7 +17,8 @@ class ApplicationTimerFactory @Autowired constructor(
     private val gen5TimerFactory: TimerFactory,
     private val customTimerFactory: TimerFactory,
     private val applicationModel: ApplicationModel,
-    private val timerRunnerService: TimerRunnerService) : TimerFactory {
+    private val timerRunnerService: TimerRunnerService
+) : TimerFactory {
 
     override val stages get() = timerFactory.stages
     private val timerFactory get() = applicationModel.selectedTimerType.timerFactory

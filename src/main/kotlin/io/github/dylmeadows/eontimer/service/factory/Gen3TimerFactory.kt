@@ -9,7 +9,8 @@ import java.time.Duration
 @Component
 class Gen3TimerFactory @Autowired constructor(
     private val gen3Timer: Gen3Timer,
-    private val frameTimer: FrameTimer) : TimerFactory {
+    private val frameTimer: FrameTimer
+) : TimerFactory {
 
     override val stages: List<Duration>
         get() {

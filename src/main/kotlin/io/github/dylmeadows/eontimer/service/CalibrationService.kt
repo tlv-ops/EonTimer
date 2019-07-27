@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class CalibrationService @Autowired constructor(
-    private val timerSettings: TimerSettings) {
+    private val timerSettings: TimerSettings
+) {
 
     private val console get() = timerSettings.console
 

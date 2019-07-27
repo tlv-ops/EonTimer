@@ -7,7 +7,8 @@ import java.time.Duration
 
 @Component
 class CustomTimerFactory @Autowired constructor(
-    private val customTimer: CustomTimer) : TimerFactory {
+    private val customTimer: CustomTimer
+) : TimerFactory {
 
     override val stages: List<Duration>
         get() = customTimer.stages

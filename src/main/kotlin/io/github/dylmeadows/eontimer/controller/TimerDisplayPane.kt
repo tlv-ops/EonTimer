@@ -3,8 +3,8 @@ package io.github.dylmeadows.eontimer.controller
 import io.github.dylmeadows.commonkt.core.time.isIndefinite
 import io.github.dylmeadows.commonkt.javafx.scene.paint.toHex
 import io.github.dylmeadows.eontimer.model.settings.ActionSettings
-import io.github.dylmeadows.eontimer.service.TimerRunnerService
 import io.github.dylmeadows.eontimer.service.TimerActionService
+import io.github.dylmeadows.eontimer.service.TimerRunnerService
 import io.github.dylmeadows.reaktorfx.scheduler.JavaFxScheduler
 import io.github.dylmeadows.reaktorfx.source.valuesOf
 import javafx.fxml.FXML
@@ -17,7 +17,8 @@ import java.time.Duration
 class TimerDisplayPane @Autowired constructor(
     private val timerRunnerService: TimerRunnerService,
     private val timerActionService: TimerActionService,
-    private val actionSettings: ActionSettings) {
+    private val actionSettings: ActionSettings
+) {
 
     @FXML
     lateinit var currentStageLbl: Label

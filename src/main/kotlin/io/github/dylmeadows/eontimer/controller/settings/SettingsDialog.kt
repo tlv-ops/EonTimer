@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component
 @Component
 class SettingsDialog @Autowired constructor(
     private val properties: AppProperties,
-    loader: SpringFxmlLoader) {
+    loader: SpringFxmlLoader
+) {
 
     private val settingsControlPane = loader.load<Parent>(FxmlResource.SettingsControlPane)
 

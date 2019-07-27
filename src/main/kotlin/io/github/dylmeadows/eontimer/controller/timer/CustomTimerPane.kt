@@ -7,7 +7,6 @@ import io.github.dylmeadows.commonkt.javafx.node.spinner.LongValueFactory
 import io.github.dylmeadows.commonkt.javafx.node.spinner.text
 import io.github.dylmeadows.commonkt.javafx.node.spinner.textProperty
 import io.github.dylmeadows.eontimer.model.TimerStage
-import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.CustomTimer
 import io.github.dylmeadows.eontimer.service.TimerRunnerService
 import io.github.dylmeadows.reaktorfx.observer.asBinding
@@ -28,7 +27,8 @@ import java.time.Duration
 @Component
 class CustomTimerPane @Autowired constructor(
     private val model: CustomTimer,
-    private val timerRunnerService: TimerRunnerService) {
+    private val timerRunnerService: TimerRunnerService
+) {
 
     @FXML
     private lateinit var list: ListView<TimerStage>

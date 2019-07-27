@@ -9,7 +9,8 @@ import java.time.Duration
 
 @Service
 class FrameTimer @Autowired constructor(
-    private val calibrationService: CalibrationService) {
+    private val calibrationService: CalibrationService
+) {
 
     fun createStages(preTimer: Long): List<Duration> {
         return listOf(preTimer.milliseconds, INDEFINITE)

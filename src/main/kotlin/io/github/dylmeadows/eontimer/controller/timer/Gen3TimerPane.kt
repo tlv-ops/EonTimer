@@ -33,7 +33,8 @@ class Gen3TimerPane @Autowired constructor(
     private val model: Gen3Timer,
     private val timerFactory: Gen3TimerFactory,
     private val timerRunnerService: TimerRunnerService,
-    private val calibrationService: CalibrationService) {
+    private val calibrationService: CalibrationService
+) {
 
     @FXML
     private lateinit var modeField: ChoiceBox<Gen3Timer.Mode>

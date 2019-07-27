@@ -19,7 +19,8 @@ import java.util.*
 
 @Service
 class TimerRunnerService @Autowired constructor(
-    private val timerSettings: TimerSettings) {
+    private val timerSettings: TimerSettings
+) {
 
     var isRunning = false
         private set

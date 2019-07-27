@@ -12,15 +12,16 @@ import kotlin.math.absoluteValue
 @Service
 class DelayTimer @Autowired constructor(
     private val secondTimer: SecondTimer,
-    private val calibrationService: CalibrationService) {
+    private val calibrationService: CalibrationService
+) {
 
     fun createStages(targetSecond: Long, targetDelay: Long, calibration: Long): List<Duration> {
         return listOf(stage1(targetSecond, targetDelay, calibration), stage2(targetDelay, calibration))
     }
 
     private fun stage1(targetSecond: Long, targetDelay: Long, calibration: Long): Duration {
-        return (secondTimer.createStages(targetSecond, calibration)[0].toMillis()
-            - calibrationService.toMillis(targetDelay))
+        return (secondTimer.createStages(targetSecond, calibration)[0].toMillis() -
+            calibrationService.toMillis(targetDelay))
             .toMinimumLength()
             .milliseconds
     }

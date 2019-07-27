@@ -23,7 +23,8 @@ import org.springframework.stereotype.Component
 class Gen5TimerPane @Autowired constructor(
     private val model: Gen5Timer,
     private val timerFactory: Gen5TimerFactory,
-    private val timerRunnerService: TimerRunnerService) {
+    private val timerRunnerService: TimerRunnerService
+) {
 
     @FXML
     private lateinit var modeField: ChoiceBox<Gen5Timer.Mode>

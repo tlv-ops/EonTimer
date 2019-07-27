@@ -16,7 +16,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class TimerSettingsPane @Autowired constructor(
-    private val model: TimerSettings) {
+    private val model: TimerSettings
+) {
 
     @FXML
     private lateinit var consoleField: ChoiceBox<Console>

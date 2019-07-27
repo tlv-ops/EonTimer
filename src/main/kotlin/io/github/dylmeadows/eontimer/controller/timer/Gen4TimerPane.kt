@@ -6,7 +6,6 @@ import io.github.dylmeadows.commonkt.javafx.node.setOnFocusLost
 import io.github.dylmeadows.commonkt.javafx.node.spinner.LongValueFactory
 import io.github.dylmeadows.commonkt.javafx.node.spinner.text
 import io.github.dylmeadows.commonkt.javafx.node.spinner.valueProperty
-import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.Gen4Timer
 import io.github.dylmeadows.eontimer.service.TimerRunnerService
 import io.github.dylmeadows.eontimer.service.factory.Gen4TimerFactory
@@ -23,7 +22,8 @@ import org.springframework.stereotype.Component
 class Gen4TimerPane @Autowired constructor(
     private val model: Gen4Timer,
     private val timerFactory: Gen4TimerFactory,
-    private val timerRunnerService: TimerRunnerService) {
+    private val timerRunnerService: TimerRunnerService
+) {
 
     @FXML
     private lateinit var modeField: ChoiceBox<Gen4Timer.Mode>

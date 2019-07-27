@@ -16,8 +16,8 @@ import javax.annotation.PreDestroy
 @Configuration
 open class AppConfig @Autowired constructor(
     private val properties: AppProperties,
-    private val ctx: ApplicationContext) {
-
+    private val ctx: ApplicationContext
+) {
     @PreDestroy
     private fun destroy() {
         /*val gson = ctx.getBean(Gson::class.java)

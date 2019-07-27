@@ -17,7 +17,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class ActionSettingsPane @Autowired constructor(
-    private val model: ActionSettings) {
+    private val model: ActionSettings
+) {
 
     @FXML
     private lateinit var modeField: ChoiceBox<ActionMode>

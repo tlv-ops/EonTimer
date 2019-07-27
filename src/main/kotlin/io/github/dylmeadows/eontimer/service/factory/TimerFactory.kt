@@ -8,4 +8,3 @@ interface TimerFactory {
 
     fun calibrate()
 }
-

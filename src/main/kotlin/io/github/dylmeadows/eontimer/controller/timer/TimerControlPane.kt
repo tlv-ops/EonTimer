@@ -3,7 +3,6 @@ package io.github.dylmeadows.eontimer.controller.timer
 import io.github.dylmeadows.eontimer.model.ApplicationModel
 import io.github.dylmeadows.eontimer.model.timer.TimerType
 import io.github.dylmeadows.eontimer.service.TimerRunnerService
-import io.github.dylmeadows.eontimer.service.factory.ApplicationTimerFactory
 import io.github.dylmeadows.reaktorfx.observer.asBinding
 import io.github.dylmeadows.reaktorfx.scheduler.JavaFxScheduler
 import io.github.dylmeadows.reaktorfx.source.valuesOf
@@ -21,7 +20,8 @@ class TimerControlPane @Autowired constructor(
     private val timerRunnerService: TimerRunnerService,
     private val gen3TimerPane: Gen3TimerPane,
     private val gen4TimerPane: Gen4TimerPane,
-    private val gen5TimerPane: Gen5TimerPane) {
+    private val gen5TimerPane: Gen5TimerPane
+) {
 
     @FXML
     private lateinit var gen3Tab: Tab

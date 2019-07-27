@@ -13,7 +13,8 @@ class Gen5TimerFactory @Autowired constructor(
     private val gen5Timer: Gen5Timer,
     private val delayTimer: DelayTimer,
     private val secondTimer: SecondTimer,
-    private val calibrationService: CalibrationService) : TimerFactory {
+    private val calibrationService: CalibrationService
+) : TimerFactory {
 
     private val delayCalibration: Long
         get() = delayTimer.calibrate(gen5Timer.targetDelay, gen5Timer.delayHit)
