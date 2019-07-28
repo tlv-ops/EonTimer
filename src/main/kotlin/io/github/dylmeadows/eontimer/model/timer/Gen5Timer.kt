@@ -3,7 +3,6 @@ package io.github.dylmeadows.eontimer.model.timer
 import io.github.dylmeadows.commonkt.javafx.beans.property.getValue
 import io.github.dylmeadows.commonkt.javafx.beans.property.setValue
 import io.github.dylmeadows.commonkt.javafx.util.Choice
-import javafx.beans.property.LongProperty
 import javafx.beans.property.SimpleLongProperty
 import javafx.beans.property.SimpleObjectProperty
 
@@ -15,21 +14,32 @@ class Gen5Timer {
     val calibrationProperty = SimpleLongProperty(DEFAULT_CALIBRATION)
     var calibration by calibrationProperty
     @Transient
+    val entralinkCalibrationProperty = SimpleLongProperty(DEFAULT_ENTRALINK_CALIBRATION)
+    var entralinkCalibration by entralinkCalibrationProperty
+    @Transient
+    val frameCalibrationProperty = SimpleLongProperty(DEFAULT_FRAME_CALIBRATION)
+    var frameCalibration by frameCalibrationProperty
+    @Transient
     val targetDelayProperty = SimpleLongProperty(DEFAULT_TARGET_DELAY)
     var targetDelay by targetDelayProperty
     @Transient
     val targetSecondProperty = SimpleLongProperty(DEFAULT_TARGET_SECOND)
     var targetSecond by targetSecondProperty
     @Transient
-    val secondHitProperty: LongProperty = SimpleLongProperty()
+    val targetAdvancesProperty = SimpleLongProperty(DEFAULT_TARGET_ADVANCES)
+    var targetAdvances by targetAdvancesProperty
+    @Transient
+    val secondHitProperty = SimpleLongProperty()
     var secondHit by secondHitProperty
     @Transient
-    val delayHitProperty: LongProperty = SimpleLongProperty()
+    val delayHitProperty = SimpleLongProperty()
     var delayHit by delayHitProperty
 
     enum class Mode(override val displayName: String) : Choice {
         STANDARD("Standard"),
-        C_GEAR("C-Gear")
+        C_GEAR("C-Gear"),
+        ENTRALINK("Entralink"),
+        ENTRALINK_PLUS("Entralink+")
     }
 
     companion object {
@@ -38,5 +48,9 @@ class Gen5Timer {
         const val DEFAULT_CALIBRATION = -95L
         const val DEFAULT_TARGET_DELAY = 1200L
         const val DEFAULT_TARGET_SECOND = 50L
+        const val DEFAULT_ENTRALINK_CALIBRATION = 256L
+        const val DEFAULT_FRAME_CALIBRATION = 0L
+        const val DEFAULT_TARGET_ADVANCES = 100L
+        const val ENTRALINK_FRAME_RATE = 0.837148929
     }
 }
