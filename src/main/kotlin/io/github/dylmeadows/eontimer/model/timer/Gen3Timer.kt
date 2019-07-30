@@ -1,5 +1,6 @@
 package io.github.dylmeadows.eontimer.model.timer
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import io.github.dylmeadows.commonkt.javafx.beans.property.getValue
 import io.github.dylmeadows.commonkt.javafx.beans.property.setValue
 import io.github.dylmeadows.commonkt.javafx.util.Choice
@@ -7,20 +8,21 @@ import javafx.beans.property.SimpleLongProperty
 import javafx.beans.property.SimpleObjectProperty
 
 class Gen3Timer {
-    @Transient
+    @get:JsonIgnore
     val modeProperty = SimpleObjectProperty(DEFAULT_MODE)
     var mode: Mode by modeProperty
-    @Transient
+    @get:JsonIgnore
     val calibrationProperty = SimpleLongProperty(DEFAULT_CALIBRATION)
     var calibration by calibrationProperty
-    @Transient
+    @get:JsonIgnore
     val preTimerProperty = SimpleLongProperty(DEFAULT_PRE_TIMER)
     var preTimer by preTimerProperty
-    @Transient
+    @get:JsonIgnore
     val targetFrameProperty = SimpleLongProperty(DEFAULT_TARGET_FRAME)
     var targetFrame by targetFrameProperty
-    @Transient
+    @get:JsonIgnore
     val frameHitProperty = SimpleLongProperty()
+    @get:JsonIgnore
     var frameHit by frameHitProperty
 
     enum class Mode(override val displayName: String) : Choice {

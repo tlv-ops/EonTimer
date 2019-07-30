@@ -1,0 +1,73 @@
+import java.util.stream.Collectors
+
+ext.platform = getPlatform()
+
+dependencies {
+    javafx_modules.forEach {
+        implementation "org.openjfx:$it:$javafx_version:$platform"
+    }
+}
+
+static def getPlatform() {
+    def platform = System.getenv('JAVAFX_PLATFORM')
+    if (platform != null) {
+        return Platform.valueOf(platform)
+    } else {
+        def osName = System.getProperty("os.name").toLowerCase()
+        if (osName.startsWith("win")) return Platform.win
+        if (osName.startsWith("mac")) return Platform.mac
+        if (osName.startsWith("linux")) return Platform.linux
+        return Platform.unsupported
+    }
+}
+
+static boolean isJavaFxJar(File jar, String version, Platform platform) {
+    return jar.isFile() && Arrays.stream(Module.values())
+        .anyMatch { module ->
+            return jar.getName() == module.getPlatformJar(version, platform) ||
+                jar.getName() == module.getModuleJar()
+        }
+}
+
+task configJavaFxRun {
+    doLast {
+        if (!javafx_modules.isEmpty()) {
+            project.getPluginManager().withPlugin(ApplicationPlugin.APPLICATION_PLUGIN_NAME, {
+                JavaExec runTask = project.getTasks().findByName(ApplicationPlugin.TASK_RUN_NAME) as JavaExec
+                if (runTask == null) throw new IllegalStateException('run task is not defined')
+                
+                def jvmArgs = new ArrayList()
+                jvmArgs.add('--add-modules')
+                jvmArgs.add(javafx_modules.stream()
+                    .map { it.replaceAll('-', '.') }
+                    .collect(Collectors.joining(',')))
+                if (runTask.jvmArgs != null) {
+                    jvmArgs.addAll(runTask.jvmArgs)
+                }
+                jvmArgs.add('--module-path')
+                jvmArgs.add(runTask.classpath
+                    .filter { jar -> isJavaFxJar(jar, javafx_version, platform) }
+                    .getAsPath())
+                runTask.jvmArgs = jvmArgs
+                println(jvmArgs)
+            })
+        }
+    }
+}
+run.dependsOn(configJavaFxRun)
+
+enum Platform {
+    win, mac, linux, unsupported
+}
+
+enum Module {
+    base, fxml, graphics, controls, media, swing, web
+
+    String getPlatformJar(String version, Platform platform) {
+        return "javafx-${name()}-${version}-${platform.name()}.jar"
+    }
+
+    String getModuleJar() {
+        return "javafx-${name()}.jar"
+    }
+}

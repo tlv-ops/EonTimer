@@ -1,5 +1,6 @@
 package io.github.dylmeadows.eontimer.model.timer
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import io.github.dylmeadows.commonkt.javafx.beans.property.getValue
 import io.github.dylmeadows.commonkt.javafx.beans.property.setValue
 import io.github.dylmeadows.commonkt.javafx.util.Choice
@@ -7,33 +8,39 @@ import javafx.beans.property.SimpleLongProperty
 import javafx.beans.property.SimpleObjectProperty
 
 class Gen5Timer {
-    @Transient
+    @get:JsonIgnore
     val modeProperty = SimpleObjectProperty(DEFAULT_MODE)
     var mode: Mode by modeProperty
-    @Transient
+    @get:JsonIgnore
     val calibrationProperty = SimpleLongProperty(DEFAULT_CALIBRATION)
     var calibration by calibrationProperty
-    @Transient
+    @get:JsonIgnore
     val entralinkCalibrationProperty = SimpleLongProperty(DEFAULT_ENTRALINK_CALIBRATION)
     var entralinkCalibration by entralinkCalibrationProperty
-    @Transient
+    @get:JsonIgnore
     val frameCalibrationProperty = SimpleLongProperty(DEFAULT_FRAME_CALIBRATION)
     var frameCalibration by frameCalibrationProperty
-    @Transient
+    @get:JsonIgnore
     val targetDelayProperty = SimpleLongProperty(DEFAULT_TARGET_DELAY)
     var targetDelay by targetDelayProperty
-    @Transient
+    @get:JsonIgnore
     val targetSecondProperty = SimpleLongProperty(DEFAULT_TARGET_SECOND)
     var targetSecond by targetSecondProperty
-    @Transient
+    @get:JsonIgnore
     val targetAdvancesProperty = SimpleLongProperty(DEFAULT_TARGET_ADVANCES)
     var targetAdvances by targetAdvancesProperty
-    @Transient
+    @get:JsonIgnore
     val secondHitProperty = SimpleLongProperty()
+    @get:JsonIgnore
     var secondHit by secondHitProperty
-    @Transient
+    @get:JsonIgnore
     val delayHitProperty = SimpleLongProperty()
+    @get:JsonIgnore
     var delayHit by delayHitProperty
+    @get:JsonIgnore
+    val actualAdvancesProperty = SimpleLongProperty()
+    @get:JsonIgnore
+    var actualAdvances by actualAdvancesProperty
 
     enum class Mode(override val displayName: String) : Choice {
         STANDARD("Standard"),
