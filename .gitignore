@@ -7,9 +7,9 @@ build/
 out/
 *.iml
 
+${name}.json
 EonTimer.json
 EonTimer.log
-src/main/resources/build.properties
 *.log
 
 .DS_Store

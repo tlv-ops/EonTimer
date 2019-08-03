@@ -8,6 +8,47 @@ dependencies {
     }
 }
 
+task configJavaFxRun {
+    doLast {
+        if (!javafx_modules.isEmpty()) {
+            project.getPluginManager().withPlugin(ApplicationPlugin.APPLICATION_PLUGIN_NAME, {
+                JavaExec runTask = project.getTasks().findByName(ApplicationPlugin.TASK_RUN_NAME) as JavaExec
+                if (runTask == null) throw new IllegalStateException('run task is not defined')
+                
+                def jvmArgs = new ArrayList()
+
+                jvmArgs.add('--add-modules')
+                jvmArgs.add(javafx_modules.stream()
+                    .map { it.replaceAll('-', '.') }
+                    .collect(Collectors.joining(',')))
+
+                if (runTask.jvmArgs != null) {
+                    jvmArgs.addAll(runTask.jvmArgs)
+                }
+
+                jvmArgs.add('--module-path')
+                jvmArgs.add(runTask.classpath
+                    .filter { jar -> isJavaFxJar(jar, javafx_version, platform) }
+                    .getAsPath())
+
+                runTask.jvmArgs = jvmArgs
+            })
+        }
+    }
+}
+run.dependsOn(configJavaFxRun)
+
+startScripts {
+    doLast {
+        if (platform == Platform.linux || platform == Platform.mac) {
+            windowsScript.delete()
+        }
+        if (platform == Platform.win) {
+            unixScript.delete()
+        }
+    }
+}
+
 static def getPlatform() {
     def platform = System.getenv('JAVAFX_PLATFORM')
     if (platform != null) {
@@ -28,32 +69,6 @@ static boolean isJavaFxJar(File jar, String version, Platform platform) {
                 jar.getName() == module.getModuleJar()
         }
 }
-
-task configJavaFxRun {
-    doLast {
-        if (!javafx_modules.isEmpty()) {
-            project.getPluginManager().withPlugin(ApplicationPlugin.APPLICATION_PLUGIN_NAME, {
-                JavaExec runTask = project.getTasks().findByName(ApplicationPlugin.TASK_RUN_NAME) as JavaExec
-                if (runTask == null) throw new IllegalStateException('run task is not defined')
-                
-                def jvmArgs = new ArrayList()
-                jvmArgs.add('--add-modules')
-                jvmArgs.add(javafx_modules.stream()
-                    .map { it.replaceAll('-', '.') }
-                    .collect(Collectors.joining(',')))
-                if (runTask.jvmArgs != null) {
-                    jvmArgs.addAll(runTask.jvmArgs)
-                }
-                jvmArgs.add('--module-path')
-                jvmArgs.add(runTask.classpath
-                    .filter { jar -> isJavaFxJar(jar, javafx_version, platform) }
-                    .getAsPath())
-                runTask.jvmArgs = jvmArgs
-            })
-        }
-    }
-}
-run.dependsOn(configJavaFxRun)
 
 enum Platform {
     win, mac, linux, unsupported
