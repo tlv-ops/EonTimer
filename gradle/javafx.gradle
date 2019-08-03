@@ -49,7 +49,6 @@ task configJavaFxRun {
                     .filter { jar -> isJavaFxJar(jar, javafx_version, platform) }
                     .getAsPath())
                 runTask.jvmArgs = jvmArgs
-                println(jvmArgs)
             })
         }
     }

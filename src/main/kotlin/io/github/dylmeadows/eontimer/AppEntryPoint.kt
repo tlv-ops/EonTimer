@@ -31,8 +31,8 @@ class AppEntryPoint @Autowired constructor(
     override fun start(stage: Stage) {
         stage.title = "${properties.name} v${properties.version}"
         stage.scene = fxmlLoader.load<Parent>(FxmlResource.EonTimerPane).asScene()
-        stage.size = Dimension(610.0, 470.0)
         stage.scene.addCss(CssResource.MAIN)
+        stage.size = Dimension(610.0, 470.0)
         stage.isResizable = false
         stage.show()
     }

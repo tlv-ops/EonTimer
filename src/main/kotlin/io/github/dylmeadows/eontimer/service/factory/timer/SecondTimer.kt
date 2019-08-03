@@ -1,7 +1,6 @@
 package io.github.dylmeadows.eontimer.service.factory.timer
 
 import io.github.dylmeadows.commonkt.core.time.milliseconds
-import io.github.dylmeadows.eontimer.util.toMinimumLength
 import org.springframework.stereotype.Service
 import java.time.Duration
 

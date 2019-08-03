@@ -3,7 +3,6 @@ package io.github.dylmeadows.eontimer.service.factory.timer
 import io.github.dylmeadows.commonkt.core.time.milliseconds
 import io.github.dylmeadows.eontimer.model.timer.TimerConstants
 import io.github.dylmeadows.eontimer.service.CalibrationService
-import io.github.dylmeadows.eontimer.util.toMinimumLength
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.Duration

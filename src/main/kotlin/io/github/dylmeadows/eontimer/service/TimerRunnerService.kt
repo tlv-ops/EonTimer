@@ -21,7 +21,6 @@ import java.util.*
 class TimerRunnerService @Autowired constructor(
     private val timerSettings: TimerSettings
 ) {
-
     var isRunning = false
         private set
     var total = TimerStage()

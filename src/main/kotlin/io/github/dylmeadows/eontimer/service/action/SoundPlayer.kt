@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct
 class SoundPlayer @Autowired constructor(
     private val actionSettings: ActionSettings
 ) {
-
     private lateinit var mediaPlayer: MediaPlayer
 
     @PostConstruct

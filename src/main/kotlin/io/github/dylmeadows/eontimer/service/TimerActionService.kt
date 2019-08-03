@@ -24,7 +24,6 @@ class TimerActionService @Autowired constructor(
     private val timerActionSettings: ActionSettings,
     private val soundPlayer: SoundPlayer
 ) {
-
     private var actionInterval: List<Duration> = Collections.emptyList()
     private var nextAction = 0
 
