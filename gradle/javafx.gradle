@@ -1,3 +1,4 @@
+import java.util.regex.Matcher
 import java.util.stream.Collectors
 
 ext.platform = getPlatform()
@@ -14,7 +15,7 @@ task configJavaFxRun {
             project.getPluginManager().withPlugin(ApplicationPlugin.APPLICATION_PLUGIN_NAME, {
                 JavaExec runTask = project.getTasks().findByName(ApplicationPlugin.TASK_RUN_NAME) as JavaExec
                 if (runTask == null) throw new IllegalStateException('run task is not defined')
-                
+
                 def jvmArgs = new ArrayList()
 
                 jvmArgs.add('--add-modules')
@@ -39,11 +40,24 @@ task configJavaFxRun {
 run.dependsOn(configJavaFxRun)
 
 startScripts {
+    doFirst {
+        defaultJvmOpts = [
+            '--module-path', 'APP_HOME_LIBS',
+            '--add-modules', javafx_modules.stream()
+                .map { it.replaceAll('-', '.') }
+                .collect(Collectors.joining(','))
+        ]
+    }
     doLast {
         if (platform == Platform.linux || platform == Platform.mac) {
+            def bashFile = new File(outputDir, applicationName)
+            bashFile.text = bashFile.text.replaceFirst('APP_HOME_LIBS', Matcher.quoteReplacement('$APP_HOME/lib'))
             windowsScript.delete()
         }
+
         if (platform == Platform.win) {
+            def batFile = new File(outputDir, applicationName + ".bat")
+            batFile.text = batFile.text.replaceFirst('APP_HOME_LIBS', Matcher.quoteReplacement('%APP_HOME%\\lib'))
             unixScript.delete()
         }
     }
@@ -54,11 +68,16 @@ static def getPlatform() {
     if (platform != null) {
         return Platform.valueOf(platform)
     } else {
-        def osName = System.getProperty("os.name").toLowerCase()
-        if (osName.startsWith("win")) return Platform.win
-        if (osName.startsWith("mac")) return Platform.mac
-        if (osName.startsWith("linux")) return Platform.linux
-        return Platform.unsupported
+        def osName = System.getProperty('os.name').toLowerCase()
+        if (osName.startsWith('win')) {
+            return Platform.win
+        } else if (osName.startsWith('mac')) {
+            return Platform.mac
+        } else if (osName.startsWith('linux')) {
+            return Platform.linux
+        } else {
+            return Platform.unsupported
+        }
     }
 }
 
