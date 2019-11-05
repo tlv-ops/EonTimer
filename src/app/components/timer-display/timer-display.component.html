@@ -1,0 +1,13 @@
+<div class="row my-3">
+  <div class="col-lg-4 mx-auto">
+    <div class="card card-body">
+      <h1 class="mx-auto time">{{timer.currentRemaining | time}}</h1>
+      <div class="mx-auto">Minutes Before Target:
+        <span class="time">{{minutesBeforeTarget}}</span>
+      </div>
+      <div class="mx-auto">Next Stage:
+        <span class="time">{{timer.nextDuration | time}}</span>
+      </div>
+    </div>
+  </div>
+</div>
