@@ -1,0 +1,30 @@
+<div>
+  <!--  <div class="form-group">-->
+  <!--    <label for="actionMode">Mode</label>-->
+  <!--    <select id="actionMode" class="form-control" [(ngModel)]="actionMode">-->
+  <!--      <option *ngFor="let mode of actionModes" [ngValue]="mode.ordinal">-->
+  <!--        {{mode.displayName}}-->
+  <!--      </option>-->
+  <!--    </select>-->
+  <!--  </div>-->
+  <div class="form-group">
+    <label for="sound">Sound</label>
+    <select id="sound" class="form-control" [(ngModel)]="sound">
+      <option *ngFor="let sound of sounds" [ngValue]="sound.ordinal">
+        {{sound.displayName}}
+      </option>
+    </select>
+  </div>
+  <!--  <div class="form-group">-->
+  <!--    <label for="color">Color</label>-->
+  <!--    <input id="color" type="color" class="form-control" [(ngModel)]="model.color"/>-->
+  <!--  </div>-->
+  <div class="form-group">
+    <label for="interval">Interval</label>
+    <input id="interval" type="number" class="form-control" [(ngModel)]="model.interval"/>
+  </div>
+  <div class="form-group">
+    <label for="count">Count</label>
+    <input id="count" type="number" class="form-control" [(ngModel)]="model.count"/>
+  </div>
+</div>

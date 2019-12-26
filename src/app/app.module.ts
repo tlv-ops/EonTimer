@@ -7,17 +7,19 @@ import {Gen4TimerComponent} from './components/gen4-timer/gen4-timer.component';
 import {SettingsModalComponent} from './components/settings-modal/settings-modal.component';
 import {FormsModule} from '@angular/forms';
 import {TimerDisplayComponent} from './components/timer-display/timer-display.component';
-import {Gen3TimerComponent} from './components/gen3-timer/gen3-timer.component';
-import { TimePipe } from './pipes/time.pipe';
+import {TimePipe} from './pipes/time.pipe';
+import {TimerSettingsComponent} from './components/settings-modal/timer-settings/timer-settings.component';
+import {ActionSettingsComponent} from './components/settings-modal/action-settings/action-settings.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    Gen3TimerComponent,
     Gen4TimerComponent,
     TimerDisplayComponent,
     SettingsModalComponent,
-    TimePipe
+    TimePipe,
+    TimerSettingsComponent,
+    ActionSettingsComponent
   ],
   imports: [
     BrowserModule,

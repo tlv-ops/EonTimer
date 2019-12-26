@@ -3,9 +3,9 @@
     <span class="pr-2"><i class="fab fa-github fa-lg"></i></span>
     <span>EonTimer</span>
   </a>
-  <a class="nav-item" role="button" (click)="onClick()">
+  <button class="btn btn-secondary" (click)="settingsModal.show()" [disabled]="timer.isRunning">
     <i class="fas fa-cog fa-lg"></i>
-  </a>
+  </button>
 </nav>
 <app-timer-display></app-timer-display>
 <app-gen4-timer></app-gen4-timer>

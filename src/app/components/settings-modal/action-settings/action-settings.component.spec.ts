@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Gen3TimerComponent } from './gen3-timer.component';
+import { ActionSettingsComponent } from './action-settings.component';
 
-describe('Gen3TimerComponent', () => {
-  let component: Gen3TimerComponent;
-  let fixture: ComponentFixture<Gen3TimerComponent>;
+describe('ActionSettingsComponent', () => {
+  let component: ActionSettingsComponent;
+  let fixture: ComponentFixture<ActionSettingsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ Gen3TimerComponent ]
+      declarations: [ ActionSettingsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(Gen3TimerComponent);
+    fixture = TestBed.createComponent(ActionSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

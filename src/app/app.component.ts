@@ -1,5 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {SettingsModalComponent} from './components/settings-modal/settings-modal.component';
+import {TimerService} from './services/timer.service';
 
 @Component({
   selector: 'app-root',
@@ -10,9 +11,8 @@ export class AppComponent {
   title = 'eon-timer';
 
   @ViewChild(SettingsModalComponent, {static: false})
-  modal: SettingsModalComponent;
+  settingsModal: SettingsModalComponent;
 
-  onClick() {
-    this.modal.show();
+  constructor(public timer: TimerService) {
   }
 }

@@ -1,9 +1,17 @@
 import {ConsoleFamily} from './console-family';
+import {Sound} from './sound';
+import {ActionMode} from './action-mode';
 
 export const MINIMUM_LENGTH = 14000;
 export const UPDATE_FACTOR = 1.0;
 export const CLOSE_UPDATE_FACTOR = 0.75;
 export const CLOSE_THRESHOLD = 167;
+
+export interface AppSettings {
+  gen4: Gen4Timer;
+  action: ActionSettings;
+  timer: TimerSettings;
+}
 
 export interface Gen4Timer {
   calibratedDelay: number;
@@ -13,6 +21,8 @@ export interface Gen4Timer {
 }
 
 export interface ActionSettings {
+  mode: ActionMode;
+  sound: Sound;
   color: string;
   interval: number;
   count: number;
@@ -20,14 +30,11 @@ export interface ActionSettings {
 
 export interface TimerSettings {
   console: ConsoleFamily;
+  isPrecisionCalibrationMode: boolean;
   refreshInterval: number;
 }
 
-export interface AppSettings {
-  gen4: Gen4Timer;
-  action: ActionSettings;
-  timer: TimerSettings;
-}
+export const appSettings = getAppSettings();
 
 function getAppSettings(): AppSettings {
   const settings = localStorage.getItem('settings');
@@ -43,20 +50,21 @@ function getAppSettings(): AppSettings {
       },
       timer: {
         console: ConsoleFamily.NDS,
+        isPrecisionCalibrationMode: false,
         refreshInterval: 8
       },
       action: {
+        mode: ActionMode.AV,
+        sound: Sound.BEEP,
         color: '#00ffff',
         interval: 500,
         count: 6
       }
     };
   }
-
 }
 
-export const appSettings = getAppSettings();
-
+// TODO: uncomment this for prod build
 (() => {
   window.onbeforeunload = () => {
     localStorage.setItem('settings', JSON.stringify(appSettings));

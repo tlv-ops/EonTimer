@@ -1,0 +1,23 @@
+<div>
+<!--  <div class="form-group">-->
+  <!--    <label for="console">Console</label>-->
+  <!--    <select id="console" class="form-control" [(ngModel)]="console">-->
+  <!--      <option *ngFor="let console of consoles" [ngValue]="console.ordinal">-->
+  <!--        {{console.name}}-->
+  <!--      </option>-->
+  <!--    </select>-->
+  <!--  </div>-->
+  <div class="form-group">
+    <label for="refreshInterval">Refresh Interval</label>
+    <input id="refreshInterval" class="form-control" type="number" [(ngModel)]="model.refreshInterval"/>
+  </div>
+  <div class="form-group">
+    <div class="form-check">
+      <input id="precisionCalibrationMode" class="form-check-input" type="checkbox"
+             [(ngModel)]="model.isPrecisionCalibrationMode">
+      <label class="form-check-label" for="precisionCalibrationMode">
+        Precision Calibration Mode
+      </label>
+    </div>
+  </div>
+</div>

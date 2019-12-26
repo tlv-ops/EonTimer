@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {appSettings} from '../models/settings';
+import {TimerActionService} from './timer-action.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +15,16 @@ export class TimerService {
 
   private stageIndex = 0;
   private mStages: ReadonlyArray<number> = [];
+  private actionIndex = 0;
+  private mActions: ReadonlyArray<number> = [];
+
+  constructor(private timerAction: TimerActionService) {
+  }
 
   start() {
     if (!this.mIsRunning) {
       this.mIsRunning = true;
-
+      this.initializeActions();
       let lastTimestamp = Date.now();
       const run = (refreshInterval: number) => {
         window.setTimeout(() => {
@@ -31,6 +37,10 @@ export class TimerService {
           this.mCurrentElapsed += delta;
           this.mTotalElapsed += delta;
           lastTimestamp = now;
+          if (this.currentRemaining <= this.mActions[this.actionIndex]) {
+            this.timerAction.invoke();
+            this.actionIndex += 1;
+          }
 
           if (this.currentElapsed < this.currentDuration) {
             let nextRefreshInterval = this.refreshInterval;
@@ -49,11 +59,12 @@ export class TimerService {
             this.mCurrentElapsed = this.currentElapsed - this.currentDuration;
             this.mCurrentDuration = this.getStage(this.stageIndex);
             this.mNextDuration = this.getStage(this.stageIndex + 1);
-            run(appSettings.timer.refreshInterval);
+            this.initializeActions();
+            run(this.refreshInterval);
           }
         }, refreshInterval);
       };
-      run(appSettings.timer.refreshInterval);
+      run(this.refreshInterval);
     }
   }
 
@@ -66,6 +77,20 @@ export class TimerService {
       this.mNextDuration = this.getStage(1);
       this.stageIndex = 0;
     }
+  }
+
+  private initializeActions() {
+    const actions: number[] = [];
+    const count = appSettings.action.count;
+    const interval = appSettings.action.interval;
+    for (let i = count - 1; i >= 0; i--) {
+      const action = interval * i;
+      if (action < this.currentDuration) {
+        actions.push(interval * i);
+      }
+    }
+    this.mActions = Object.freeze(actions);
+    this.actionIndex = 0;
   }
 
   private get refreshInterval(): number {

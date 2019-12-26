@@ -18,7 +18,27 @@ export class CalibratorService {
     return this.toMillis(delay - this.toDelays(second * 1000));
   }
 
+  calibrateToMillis(value: number): number {
+    if (!this.isPrecisionCalibrationMode) {
+      return this.toMillis(value);
+    } else {
+      return value;
+    }
+  }
+
+  calibrateToDelays(value: number): number {
+    if (!this.isPrecisionCalibrationMode) {
+      return this.toDelays(value);
+    } else {
+      return value;
+    }
+  }
+
   private get console(): ConsoleFamily {
     return appSettings.timer.console;
+  }
+
+  private get isPrecisionCalibrationMode(): boolean {
+    return appSettings.timer.isPrecisionCalibrationMode;
   }
 }

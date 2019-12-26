@@ -7,10 +7,10 @@ import {TimerService} from '../../services/timer.service';
   styleUrls: ['./timer-display.component.scss']
 })
 export class TimerDisplayComponent {
-  constructor(protected timer: TimerService) {
+  constructor(public timer: TimerService) {
   }
 
-  protected get minutesBeforeTarget(): number {
+  get minutesBeforeTarget(): number {
     return Math.floor((this.timer.totalDuration - this.timer.totalElapsed) / 60000);
   }
 }
